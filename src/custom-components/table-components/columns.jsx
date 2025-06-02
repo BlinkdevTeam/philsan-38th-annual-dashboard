@@ -9,7 +9,7 @@ export const columns = (props) => {
             sortable: true,
 		    reorder: true,
             selector: (row => {
-                return row.email_address
+                return row.email
             }),
         },
         {
@@ -55,27 +55,27 @@ export const columns = (props) => {
     return column;
 }
 
-createTheme('boehringer', {
+createTheme('philsan', {
     text: {
-      primary: '#dbdbdb',
-      secondary: '#dbdbdb',
+      primary: '#67706a',
+      secondary: '#67706a',
     },
     background: {
-      default: '#08312a',
+      default: '#bfcec4',
     },
     context: {
-      background: '#cb4b16',
-      text: '#dbdbdb',
+      background: '#bfcec4',
+      text: '#67706a',
     },
     striped: {
-        text: '#dbdbdb',
-        default: '#093931', // <--- customize this striped row color
+        text: '#67706a',
+        default: '#acc5b4', // <--- customize this striped row color
       },
     divider: {
-      default: '#dbdbdb',
+      default: '#67706a',
     },
     highlightOnHover: {
-        default: '#00e47c',
+        default: '#c2f9d4',
     },
     action: {
       button: '#dbdbdb',
@@ -83,7 +83,7 @@ createTheme('boehringer', {
       disabled: 'rgba(0,0,0,.12)',
     },
     pagination: {
-        default: "#dbdbdb"
+        default: "#67706a"
     }
   });
 
