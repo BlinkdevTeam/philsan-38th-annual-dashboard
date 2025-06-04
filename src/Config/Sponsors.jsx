@@ -1,0 +1,33 @@
+const Sponsors = [
+    { sponsor: "Alltech", password: "a9d7f2-Alltech" },
+    { name: "Ariela", password: "x3g1m8-Ariela" },
+    { name: "AWAP", password: "u7k2q5-AWAP" },
+    { name: "Bounty  PLus", password: "z8h4e1-Bounty-PLus" },
+    { name: "Camden", password: "b2t9m6-Camden" },
+    { name: "Diconex", password: "m5a8z0-Diconex" },
+    { name: "DSM", password: "y3n9p4-DSM" },
+    { name: "Easybio", password: "t0l3v7-Easybio" },
+    { name: "Equalivet", password: "q6r1x2-Equalivet" },
+    { name: "East Asia", password: "n2f6b9-East-Asia" },
+    { name: "Evonik", password: "p4w7c3-Evonik" },
+    { name: "Inphilco", password: "j9s8k1-Inphilco" },
+    { name: "Interfarma", password: "k6h5d0-Interfarma" },
+    { name: "JCS", password: "v2m8e6-JCS" },
+    { name: "Jebsen and Jessen", password: "r3z4q1-Jebsen-and-Jessen" },
+    { name: "KPP Powers", password: "g7c2n4-KPP-Powers" },
+    { name: "Maxion", password: "h8v5w9-Maxion" },
+    { name: "MGB", password: "s1b6a3-MGB" },
+    { name: "Nuevo Milenio", password: "e9d7m5-Nuevo-Milenio" },
+    { name: "Novus", password: "w3r0z6-Novus" },
+    { name: "Philchema", password: "f6p1x7-Philchema" },
+    { name: "Promax", password: "c4n8d2-Promax" },
+    { name: "Realvet", password: "u5y3k9-Realvet" },
+    { name: "RNT", password: "z1h6m0-RNT" },
+    { name: "Seastemas", password: "a3q8w5-Seastemas" },
+    { name: "St John Biomedics", password: "l7b4c2-St-John-Biomedics" },
+    { name: "Vet Health", password: "o2k5v3-Vet-Health" },
+    { name: "Vet Specialist", password: "d9g1z8-Vet-Specialist" },
+    { name: "Philsan Secretariat", password: "admin-secretariat-38th" }
+];
+
+export default Sponsors;

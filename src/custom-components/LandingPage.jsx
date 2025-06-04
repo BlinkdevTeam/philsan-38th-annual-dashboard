@@ -1,9 +1,12 @@
 import MainTable from "./table-components/MainTable"
 
-const LandingPage = () => {
+const LandingPage = ({sponsor}) => {
+    
     return (
         <>
-            <MainTable/>
+            <MainTable
+                sponsor={sponsor}
+            />
         </>
     )
 }

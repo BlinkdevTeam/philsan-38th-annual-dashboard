@@ -40,7 +40,53 @@ export const getApproved = async () => {
     const { data, error } = await supabase
         .from('philsan_registration_2025')
         .select('*')
-        .is('reg_status', null) // <-- filter out rows where time_in is null
+        .eq('reg_status', "approved")
+        .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data;
+};
+
+export const getCanceled = async () => {
+    const { data, error } = await supabase
+        .from('philsan_registration_2025')
+        .select('*')
+        .eq('reg_status', "canceled")
+        .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data;
+};
+
+export const getVerified = async () => {
+    const { data, error } = await supabase
+        .from('philsan_registration_2025')
+        .select('*')
+        .eq('reg_status', "verified")
+        .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data;
+};
+
+export const getSponsorsPendings = async (props) => {
+    const { data, error } = await supabase
+        .from('philsan_registration_2025')
+        .select('*')
+        .eq('reg_status', "pending")
+        .eq('sponsor', props.sponsor)
+        .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    return data;
+};
+
+export const getSponsorsApproved = async (props) => {
+    const { data, error } = await supabase
+        .from('philsan_registration_2025')
+        .select('*')
+        .is('reg_status', null)
+        .eq('sponsor', props.sponsor)
         .order('created_at', { ascending: false });
 
     if (error) throw error;
