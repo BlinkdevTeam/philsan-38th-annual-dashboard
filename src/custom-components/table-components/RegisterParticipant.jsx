@@ -1,0 +1,198 @@
+import React, {useState, useRef,} from "react";
+import { textFields, membersRadio, souvenirRadio, sponsorRadio, certRadio } from "./Config/regParticipantsData";
+import { generateToken } from "./Config/generateToken";
+import PhilsanLogo from "../../assets/philsan_logo.png";
+import { createItem } from "../../supabase/supabaseService";
+
+const RegisterParticipant = () => {
+    const fileInputRef = useRef(null);
+    const [regDetails, setRegDetails] = useState({
+            email: null,
+            first_name: null,
+            last_name: null,
+            middle_name: null,
+            mobile: null,
+            company: null,
+            position: null,
+            agri_license: null,
+            membership: null,
+            souvenir: null,
+            certificate_needed: null,
+            sponsored: "yes",
+            sponsor: null,
+            payment: null,
+            reg_request: new Date().toISOString(),
+            reg_status: "pending",
+            token: generateToken(16)
+        });
+
+    const handleChange = (e) => {
+        if(e.target.name === "payment" && e.target.files.length > 0 ) {
+            setRegDetails(prev => ({
+                ...prev,
+                payment: e.target.files[0].name.replace(/\s+/g, "_") //store actual filename in the regDetails state
+            }));
+        } else {
+            setRegDetails(prev => ({
+                ...prev,
+                [e.target.name]: e.target.value
+            }));
+        }
+    }  
+
+    const handleUploadClick = () => {
+        fileInputRef.current.click(); // Trigger hidden input
+    };
+
+    
+
+    const inviteEmail = () => {
+        //VERIFICATION
+        let err = 0;
+        
+        Object.keys(regDetails).forEach(i => {
+            if (regDetails[i] === null) err++;
+        });
+
+        if (err > 0) {
+           return console.log("Fiil all required inputs")
+        }  return createItem(regDetails)
+    };
+
+    console.log("regDetails", regDetails)
+
+    return (
+        <div className="w-[100%]">
+            <div className="max-w-[1200]">
+                <div className="flex">
+                    <div className="w-[100%] flex justify-center items-start h-[100vh]">
+                        <form className="bg-[#ffffff] px-[30px] pb-[60px] pt-[40px] rounded-lg shadow-md">
+                            <div className="flex gap-[50px]">
+                                <div className="">
+                                    <div className="flex flex-col gap-[10px]">
+                                        {
+                                            textFields.map((i, index) => {
+                                                return (
+                                                    <div key={i.name+index} className="flex flex-col gap-[5px] w-[350px]">
+                                                        <p className="font-[600] text-[12px] text-[#1f783b] mb-[-6px]">{i.placeholder}</p>
+                                                        <input value={regDetails.name} name={i.name} onChange={(e) => handleChange(e)} className="bg-[#eaeeeb] p-[10px] rounded-md" type="text" placeholder={"Enter " + i.placeholder} required/>
+                                                    </div>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="w-[100%] flex flex-col gap-[15px]">
+                                        {/* PHILSAN Member --> */}
+                                        <div className="flex flex-col">
+                                            <p className="font-[700] text-[#1f783b]">Are you a PHILSAN Member?</p>
+                                            <div className="flex gap-[20px]">
+                                                {membersRadio.map((i, index) => {
+                                                    return (
+                                                        <div key={"member"+index} className="flex gap-[5px]">
+                                                            <input type="radio" name="membership" value={i} onChange={(e) => handleChange(e)}/>
+                                                            <p>{i}</p>
+                                                        </div>
+                                                    )
+                                                })}
+                                            </div>
+                                        </div>
+
+                                        {/* Souvenir Program --> */}
+                                        <div className="flex flex-col">
+                                            <p className="font-[700] text-[#1f783b]">Souvenir Program</p>
+                                            <div className="flex gap-[20px]">
+                                                {souvenirRadio.map((i, index) => {
+                                                    return (
+                                                        <div key={"souvenir"+index} className="flex gap-[5px]">
+                                                            <input type="radio" name="souvenir" value={i} onChange={(e) => handleChange(e)}/>
+                                                            <p>{i}</p>
+                                                        </div>
+                                                    )
+                                                })}
+                                            </div>
+                                        </div>
+
+                                        {/* Certificate of Attendance --> */}
+                                        <div className="flex flex-col">
+                                            <p className="font-[700] text-[#1f783b]">Do you need a Certificate of Attendance?</p>
+                                            <div className="flex gap-[20px]">
+                                                {certRadio.map((i, index) => {
+                                                    return (
+                                                        <div key={"cert"+index} className="flex gap-[5px]">
+                                                            <input type="radio" name="certificate_needed" value={i} onChange={(e) => handleChange(e)}/>
+                                                            <p>{i}</p>
+                                                        </div>
+                                                    )
+                                                })}
+                                            </div>
+                                        </div>
+
+                                        {/* Sponsors --> */}
+                                        <div className="flex flex-col">
+                                            <p className="font-[700] text-[#1f783b]">Who's your sponsor?</p>
+                                            <div className="flex gap-[50px]">
+                                                 {
+                                                    sponsorRadio.map((sponsorGroup, index) => {
+                                                    return (
+                                                        <div key={"sponsorGroup"+index} className="flex flex-col gap-[10px]">
+                                                            {sponsorGroup.map((i, index) => {
+                                                                return (
+                                                                    <div key={"sponsor"+index} className="flex gap-[5px]">
+                                                                        <input type="radio" name="sponsor" value={i} onChange={(e) => handleChange(e)}/>
+                                                                        <p>{i}</p>
+                                                                    </div>
+                                                                )
+                                                            })}
+                                                        </div>
+                                                    )
+                                                    })
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex flex-col w-[50%] pt-[50px]">
+                                <p className="font-[700] text-[#1f783b]">Please upload your proof of payment</p>
+                                <div
+                                    id="upload-area"
+                                    className="flex items-center justify-center w-full p-[50px] rounded-[20px] bg-[#e2e1e1] cursor-pointer text-center"
+                                    onClick={handleUploadClick}
+                                >
+                                    <p className="break-words whitespace-normal max-w-full">{regDetails.payment ? regDetails.payment : "Upload Proof of Payment"}</p>
+                                </div>
+
+                                {/* Hidden input field */}
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    name="payment"
+                                    onChange={(e) => handleChange(e)}
+                                    className="hidden"
+                                    accept="image/*"
+                                />
+                            </div>
+
+                            <div className="flex gap-[10px] pt-[20px] items-center w-[600px] items-start pt-[50px]">
+                                <input className="w-[20px] h-[20px] mt-[2px]" type="checkbox" id="" name="" value="E Company" required/>
+                                <p className="italic font-[300]">Include a Data Privacy Statement and Photo/Video Consent agreement</p>
+                            </div>
+                            <div className="flex pt-[20px]">
+                                <button 
+                                    onClick={inviteEmail} 
+                                    className="cursor-pointer bg-[#F9B700] hover:bg-[#ffe700] py-[20px] px-[100px] text-[#ffffff] rounded-lg transition-background-color duration-300 ease-in-out"
+                                >
+                                    <span>Invite</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+export default RegisterParticipant;

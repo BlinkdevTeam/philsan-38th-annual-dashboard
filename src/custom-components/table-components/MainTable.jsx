@@ -1,40 +1,40 @@
 import { useEffect, useState } from "react"
 import DataTable from 'react-data-table-component';
 import { columns } from './columns';
-import { getItems, deleteWithCharaters, getApproved, getPendings, getCanceled, getVerified, getSponsorsApproved, getSponsorsPendings, updateItem } from '../../supabase/supabaseService';
+import { getItems, deleteWithCharaters, getApproved, getPendings, getCanceled, getVerified, getSponsorsApproved, getSponsorsPendings, updateItem, deleteItem } from '../../supabase/supabaseService';
 import { supabase } from "/supabaseClient";
 import { Toaster } from 'react-hot-toast';
 import PhilsanLogo from "../../assets/philsan_logo.png"
 import Widget from "./Widget";
 import SliderModal from "./SliderModal";
+import { uploadProof } from "./Config/uploadProof";
+import RegisterParticipant from "./RegisterParticipant";
 import toast from 'react-hot-toast'
+import emailjs from "@emailjs/browser";
+
+import { onApprove, onDelete, onReject, inviteEmail } from "./Config/crudEmailjs";
 
 const MainTable = ({sponsor}) => {
     const bucket = 'philsan-proof-of-payments';
-    const [allParticipants, setAllparticipants] = useState([]);
-	const [participants, setParticipants] = useState([]);
     const [selectedCol, setSelectedCol] = useState(null);
     const [proof, setProof] = useState(null);
     const [userStatus, setUserStatus] = useState("Approved");
     const [pendings, setPendings] = useState([]);
     const [approved, setApproved] = useState([]);
-    const [verified, setVerified] = useState([]);
+    const [invited, setInvited] = useState([]);
     const [canceled, setCanceled] = useState([]);
 
-    useEffect(() => {
+    useEffect(() => {        
         if (!sponsor) return;
 
         const fetchData = () => {
             try {
-            if (sponsor.name === "Philsan Secretariat") {
-                getApproved().then(setApproved);
-                getPendings().then(setPendings);
-                getCanceled().then(setCanceled);
-                getVerified().then(setVerified);
-            } else {
-                // setApproved(getSponsorsApproved({ sponsor: sponsor.name }));
-                // setPendings(getSponsorsPendings({ sponsor: sponsor.name }));
-            }
+                if (sponsor.name === "Philsan Secretariat") {
+                    getApproved().then(setApproved);
+                    getPendings().then(setPendings);
+                    getCanceled().then(setCanceled);
+                    getVerified().then(setInvited);
+                } 
             } catch (err) {
                 console.error("Fetch error:", err);
             }
@@ -79,18 +79,18 @@ const MainTable = ({sponsor}) => {
             };
 
             switch (data.reg_status) {
-            case "pending":
-                updateState(setPendings);
-                break;
-            case "verified":
-                updateState(setVerified);
-                break;
-            case "canceled":
-                updateState(setCanceled);
-                break;
-            case "approved":
-                updateState(setApproved);
-                break;
+                case "pending":
+                    updateState(setPendings);
+                    break;
+                case "invited":
+                    updateState(setInvited);
+                    break;
+                case "canceled":
+                    updateState(setCanceled);
+                    break;
+                case "approved":
+                    updateState(setApproved);
+                    break;
             }
         };
 
@@ -102,32 +102,13 @@ const MainTable = ({sponsor}) => {
 
 
     useEffect(() => {
-        if (selectedCol) {
-            const filePath = `${selectedCol.payment}`; // assuming this is your full path
-            const { data, error } = supabase
-                .storage
-                .from(bucket)
-                .getPublicUrl(filePath);
-
-            if (error) {
-                console.error('Error fetching public URL:', error);
-            } else {
-                setProof(data.publicUrl);
-            }
-        }
+        uploadProof({
+            selectedCol: selectedCol,
+            supabase: supabase,
+            setProof: (data) => setProof(data),
+            bucket: bucket
+        })
     }, [selectedCol]);
-
-    const onApprove = () => {
-        // console.log(selectedCol)
-        updateItem(selectedCol.email, {reg_status: "approved"}, )
-        closeModal()
-    }
-
-    const onReject = () => {
-        // console.log(selectedCol)
-        updateItem(selectedCol.email, {reg_status: "canceled"}, )
-        closeModal()
-    }
 
     const closeModal = () => {
         setSelectedCol(null)
@@ -159,13 +140,16 @@ const MainTable = ({sponsor}) => {
                                         userStatus={userStatus}
                                         setUserStatus={() => setContent("Approved")}
                                     />
-                                    <Widget
-                                        title={"Pending"}
-                                        value={pendings}
-                                        color={"text-[#fb6c6c]"}
-                                        userStatus={userStatus}
-                                        setUserStatus={() => setContent("Pending")}
-                                    />
+                                    {
+                                        sponsor.name === "Philsan Secretariat" &&
+                                            <Widget
+                                                title={"Pending"}
+                                                value={pendings}
+                                                color={"text-[#fb6c6c]"}
+                                                userStatus={userStatus}
+                                                setUserStatus={() => setContent("Pending")}
+                                            />
+                                    }
                                     <Widget
                                         title={"Canceled"}
                                         value={canceled}
@@ -174,11 +158,11 @@ const MainTable = ({sponsor}) => {
                                         setUserStatus={() => setContent("Canceled")}
                                     />
                                     <Widget
-                                        title={"Verified"}
-                                        value={verified}
+                                        title={"Invited"}
+                                        value={invited}
                                         color={"text-[#bfcec4]"}
                                         userStatus={userStatus}
-                                        setUserStatus={() => setContent("Verified")}
+                                        setUserStatus={() => setContent("Invited")}
                                     />
                                     <button onClick={() => setContent("registration")} className="cursor-pointer py-[10px] bg-[#ffe7a4] mx-[20px] mt-[20px] rounded-lg">Invite Participant</button>
                                 </div>
@@ -188,32 +172,7 @@ const MainTable = ({sponsor}) => {
                 </div>
 				<div className={`relative w-[100%] h-[100vh] overflow-y-scroll bg-[#dce4df] scrollbar-none p-[40px]`}>
 					{ userStatus === "registration" ? 
-                        <div className="w-[100%]">
-                            <div className="max-w-[1200]">
-                                <div className="flex">
-                                    <div className=" w-[100%] flex justify-center items-start h-[100vh]">
-                                        <div className="flex flex-col gap-[20px]">
-                                            <div className="flex flex-col justify-start items-center pb-[10px]">
-                                                <div className="w-[]">
-                                                    <img className="w-[90px]" src={PhilsanLogo} alt="" />
-                                                </div>
-                                                {/* <p className="text-[#1f783b] text-[12px] font-[800]">Philippine Society of Animal Nutritionists’</p> */}
-                                                <h6 className="text-[#1f783b] text-[26px] font-[1000] mt-[-5px]">38th CONVENTION</h6>
-                                            </div>
-                                            <div className="bg-[#ffffff] px-[30px] pb-[60px] pt-[40px] rounded-lg shadow-md">
-                                                <div className="flex flex-col gap-[10px]">
-                                                    <div className="flex flex-col gap-[5px] w-[350px]">
-                                                        <h6 className="font-[700] text-[#1f783b]">Enter Email Adress</h6>
-                                                        <input className="bg-[#eaeeeb] p-[10px] rounded-md" type="text" placeholder="Email" />
-                                                    </div>
-                                                    <button className="w-[100%] bg-[#F9B700] hover:bg-[#ffe700] py-[10px] text-[#ffffff] rounded-lg transition-background-color duration-300 ease-in-out">Invite</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> :
+                        <RegisterParticipant/> :
                         <div>
                             <div className="flex gap-[20px] mb-[20px]">
                                 <input 
@@ -230,7 +189,7 @@ const MainTable = ({sponsor}) => {
                                 data={
                                     userStatus === "Approved" ? approved : 
                                     userStatus === "Pending" ? pendings :
-                                    userStatus === "Verified" ? verified : 
+                                    userStatus === "Invited" ? invited : 
                                     userStatus === "Canceled" && canceled
                                 }
                                 striped 
@@ -246,8 +205,24 @@ const MainTable = ({sponsor}) => {
                     selectedCol={selectedCol}
                     closeModal={() => closeModal()}
                     proof={proof}
-                    onApprove={() => onApprove()}
-                    onReject={() => onReject()}
+                    onApprove={() => onApprove(
+                        {
+                            selectedCol: selectedCol,
+                            closeModal: () => closeModal()
+                        }
+                    )}
+                    onReject={() => onReject(
+                        {
+                            selectedCol: selectedCol,
+                            closeModal: () => closeModal()
+                        }
+                    )}
+                    onDelete={() => onDelete(
+                        {
+                            selectedCol: selectedCol,
+                            closeModal: () => closeModal()
+                        }
+                    )}
                 />
             </div>
         </div>
