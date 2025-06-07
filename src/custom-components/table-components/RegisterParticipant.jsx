@@ -2,10 +2,11 @@ import React, {useState, useRef,} from "react";
 import { textFields, membersRadio, souvenirRadio, sponsorRadio, certRadio } from "./Config/regParticipantsData";
 import { generateToken } from "./Config/generateToken";
 import PhilsanLogo from "../../assets/philsan_logo.png";
-import { createItem } from "../../supabase/supabaseService";
+import { createItem, storageUpload } from "../../supabase/supabaseService";
 
 const RegisterParticipant = () => {
     const fileInputRef = useRef(null);
+    const [proof, setProof] = useState(null)
     const [regDetails, setRegDetails] = useState({
             email: null,
             first_name: null,
@@ -28,6 +29,7 @@ const RegisterParticipant = () => {
 
     const handleChange = (e) => {
         if(e.target.name === "payment" && e.target.files.length > 0 ) {
+            setProof(e.target.files[0])
             setRegDetails(prev => ({
                 ...prev,
                 payment: e.target.files[0].name.replace(/\s+/g, "_") //store actual filename in the regDetails state
@@ -44,9 +46,23 @@ const RegisterParticipant = () => {
         fileInputRef.current.click(); // Trigger hidden input
     };
 
-    
+    const submitRegistration = () => {
+        let filePath;
+        
+        const uniqueFileName = `${Date.now()}_${regDetails.payment}`;
+        filePath = `proofs/${uniqueFileName}`;
 
-    const inviteEmail = () => {
+        storageUpload(filePath, proof)
+        .then((res) => {
+            if(res) {
+                createItem(regDetails)
+            }
+        })
+
+    }
+
+    const inviteEmail = (e) => {
+        e.preventDefault()
         //VERIFICATION
         let err = 0;
         
@@ -56,17 +72,17 @@ const RegisterParticipant = () => {
 
         if (err > 0) {
            return console.log("Fiil all required inputs")
-        }  return createItem(regDetails)
+        }  submitRegistration()
     };
 
-    console.log("regDetails", regDetails)
+
 
     return (
         <div className="w-[100%]">
             <div className="max-w-[1200]">
                 <div className="flex">
                     <div className="w-[100%] flex justify-center items-start h-[100vh]">
-                        <form className="bg-[#ffffff] px-[30px] pb-[60px] pt-[40px] rounded-lg shadow-md">
+                        <div className="bg-[#ffffff] px-[30px] pb-[60px] pt-[40px] rounded-lg shadow-md">
                             <div className="flex gap-[50px]">
                                 <div className="">
                                     <div className="flex flex-col gap-[10px]">
@@ -187,7 +203,7 @@ const RegisterParticipant = () => {
                                     <span>Invite</span>
                                 </button>
                             </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>

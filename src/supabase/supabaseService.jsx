@@ -93,10 +93,23 @@ export const getSponsorsApproved = async (props) => {
     return data;
 };
 
+export const storageUpload = async (filePath, file) => {
+console.log(file)
+  const { data, error } = await supabase
+    .storage
+    .from('philsan-proof-of-payments')  // Bucket name
+    .upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: true  // Overwrite if file exists
+    });
+
+  if (error) throw error;
+
+  return data;
+};
+
 // Update
 export const updateItem = async (email, data) => {
-    console.log("email", email)
-    console.log("data", data)
     const { data: result, error } = await supabase.from('philsan_registration_2025').update(data).eq('email', email).select()
     if (error) throw error
     return result
