@@ -1,5 +1,4 @@
 const Widget = (props) => {
-    console.log("props.userStatus", props.userStatus)
     return(
         <div onClick={() => props.setUserStatus()} className="flex cursor-pointer py-[5px] px-[20px] gap-[10px] justify-center items-center group">
             <div className={`flex gap-[10px] items-center w-[100%] ${props.userStatus === props.title ? "bg-[#0c3719]" : "bg-[#18622f]"} group-hover:bg-[#124d24] py-[10px] px-[10px] rounded-[8px]`}>

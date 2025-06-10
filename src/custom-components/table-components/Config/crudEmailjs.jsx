@@ -2,7 +2,6 @@ import emailjs from "@emailjs/browser";
 import { getItems, deleteWithCharaters, getApproved, getPendings, getCanceled, getVerified, getSponsorsApproved, getSponsorsPendings, updateItem, deleteItem } from '../../../supabase/supabaseService';
 
 export const onApprove = (props) => {
-    console.log("onApprove was triggered")
         updateItem(props.selectedCol.email, {reg_status: "approved"})
         .then(() => {
             emailjs.send(
@@ -21,7 +20,6 @@ export const onApprove = (props) => {
     }
 
 export const onReject = (props) => {
-    console.log("onReject was triggered")
     updateItem(props.selectedCol.email, {reg_status: "canceled"})
     .then(() => {
         emailjs.send(
@@ -40,7 +38,6 @@ export const onReject = (props) => {
 }
 
 export const onDelete = (props) => {
-    console.log("onDelete was triggered")
     // console.log(selectedCol)
     deleteItem(props.selectedCol.email)
     props.closeModal()

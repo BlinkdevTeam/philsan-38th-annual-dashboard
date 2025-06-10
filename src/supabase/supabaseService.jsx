@@ -25,48 +25,96 @@ export const getTimeins = async () => {
     return data;
 };
 
-export const getPendings = async () => {
-    const { data, error } = await supabase
-        .from('philsan_registration_2025')
-        .select('*')
-        .eq('reg_status', "pending")
-        .order('created_at', { ascending: false });
+export const getPendings = async (sponsor) => {
+    if(sponsor !== "Philsan Secretariat") {
+        const { data, error } = await supabase
+            .from('philsan_registration_2025')
+            .select('*')
+            .eq('reg_status', "pending")
+            .eq('sponsor', sponsor)
+            .order('created_at', { ascending: false });
 
-    if (error) throw error;
-    return data;
+        if (error) throw error;
+        return data;
+    } else {
+        const { data, error } = await supabase
+            .from('philsan_registration_2025')
+            .select('*')
+            .eq('reg_status', "pending")
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        return data;
+    }
 };
 
-export const getApproved = async () => {
-    const { data, error } = await supabase
-        .from('philsan_registration_2025')
-        .select('*')
-        .eq('reg_status', "approved")
-        .order('created_at', { ascending: false });
+export const getApproved = async (sponsor) => {
+    if(sponsor !== "Philsan Secretariat") {
+        const { data, error } = await supabase
+            .from('philsan_registration_2025')
+            .select('*')
+            .eq('reg_status', "approved")
+            .eq('sponsor', sponsor)
+            .order('created_at', { ascending: false });
 
-    if (error) throw error;
-    return data;
+        if (error) throw error;
+        return data;
+    } else {
+        const { data, error } = await supabase
+            .from('philsan_registration_2025')
+            .select('*')
+            .eq('reg_status', "approved")
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        return data;
+    }
 };
 
-export const getCanceled = async () => {
-    const { data, error } = await supabase
-        .from('philsan_registration_2025')
-        .select('*')
-        .eq('reg_status', "canceled")
-        .order('created_at', { ascending: false });
+export const getCanceled = async (sponsor) => {
+    if(sponsor !== "Philsan Secretariat") {
+        const { data, error } = await supabase
+            .from('philsan_registration_2025')
+            .select('*')
+            .eq('reg_status', "canceled")
+            .eq('sponsor', sponsor)
+            .order('created_at', { ascending: false });
 
-    if (error) throw error;
-    return data;
+        if (error) throw error;
+        return data;
+    } else {
+        const { data, error } = await supabase
+            .from('philsan_registration_2025')
+            .select('*')
+            .eq('reg_status', "canceled")
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        return data;
+    }
 };
 
-export const getVerified = async () => {
-    const { data, error } = await supabase
-        .from('philsan_registration_2025')
-        .select('*')
-        .eq('reg_status', "verified")
-        .order('created_at', { ascending: false });
+export const getVerified = async (sponsor) => {
+    if(sponsor !== "Philsan Secretariat") {
+        const { data, error } = await supabase
+            .from('philsan_registration_2025')
+            .select('*')
+            .eq('reg_status', "verified")
+            .eq('sponsor', sponsor)
+            .order('created_at', { ascending: false });
 
-    if (error) throw error;
-    return data;
+        if (error) throw error;
+        return data;
+    } else {
+        const { data, error } = await supabase
+            .from('philsan_registration_2025')
+            .select('*')
+            .eq('reg_status', "verified")
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        return data;
+    }
 };
 
 export const getSponsorsPendings = async (props) => {
@@ -94,7 +142,6 @@ export const getSponsorsApproved = async (props) => {
 };
 
 export const storageUpload = async (filePath, file) => {
-console.log(file)
   const { data, error } = await supabase
     .storage
     .from('philsan-proof-of-payments')  // Bucket name

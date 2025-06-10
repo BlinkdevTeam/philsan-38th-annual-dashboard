@@ -14,7 +14,6 @@ const Login = ({setSponsorIn}) => {
 
         if (filteredSponsor) {
             // setSponsorIn(filteredSponsor.sponsor)\
-            console.log(filteredSponsor.password)
             navigate(`/${filteredSponsor.password}`) // 👈 Navigate to the desired route
         } else {
             alert("Invalid code")

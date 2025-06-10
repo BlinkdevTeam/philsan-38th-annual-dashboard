@@ -10,8 +10,12 @@ const SliderModal = (props) => {
     const company = props.selectedCol ? props.selectedCol.company : null;
     const license = props.selectedCol ? props.selectedCol.agri_license : null;
     const membership = props.selectedCol ? props.selectedCol.membership : null;
+    const sponsor = props.selectedCol ? props.selectedCol.sponsor : null;
     const regRequest = props.selectedCol ? props.selectedCol.reg_request : null;
+    const payment = props.selectedCol ? props.selectedCol.payment : null;
 
+    console.log("payment", payment)
+    console.log("proof", props.proof)
     return (
         <>
             <div className={`overflow-y-scroll ${ props.selectedCol ? "w-[60%]" : "w-[0px]"} bg-[#dce4df] absolute top-[0px] right-[0px] transition-all duration-200 ease z-[2] scrollbar-none `}>
@@ -52,16 +56,22 @@ const SliderModal = (props) => {
                                 </div>
                                 {/* PROOF OF PAYMENT */}
                                 <div className="relative flex flex-col gap-[10px] justify-center items-center p-[20px] bg-[#acc5b4] rounded-lg">
-                                    <img src={props.proof} alt="" />
-                                    <div onClick={() => setZoom(true)} className="cursor-pointer justify-center text-center p-[10px] bg-[#ffffff] hover:bg-[#f9f9f9] shadow bottom-[20px] right-[20px] w-[100%]">
-                                        <p className="text-[14px]">Full View</p>
-                                    </div>
+                                    {props.proof ? <img src={props.proof} alt="" /> : <p>This person is sponsored</p>}
+                                    {
+                                        props.proof ?
+                                        <div onClick={() => setZoom(true)} className="cursor-pointer justify-center text-center p-[10px] bg-[#ffffff] hover:bg-[#f9f9f9] shadow bottom-[20px] right-[20px] w-[100%]">
+                                            <p className="text-[14px]">Full View</p>
+                                        </div> : <></>
+                                    }
                                 </div>
-                                <div className="group">
-                                    <div className="py-[10px] w-[100%] bg-[#acc5b4] group-hover:bg-[#1f783b] cursor-pointer transition-background-color duration-300 ease-in-out rounded-lg flex justify-center items-center mt-[10px]">
-                                        <p className="text-[#67706a] text-[14px] underlined group-hover:text-[#ffffff]">Download</p>
-                                    </div>
-                                </div>
+                                {
+                                    props.proof ?
+                                    <div className="group">
+                                        <div className="py-[10px] w-[100%] bg-[#acc5b4] group-hover:bg-[#1f783b] cursor-pointer transition-background-color duration-300 ease-in-out rounded-lg flex justify-center items-center mt-[10px]">
+                                            <p className="text-[#67706a] text-[14px] underlined group-hover:text-[#ffffff]">Download</p>
+                                        </div>
+                                    </div> : <></>
+                                }
                             </div>
                             <div className="w-[60%]">
                                 <div className="pb-[10px]">
@@ -107,8 +117,9 @@ const SliderModal = (props) => {
                             <div className="w-[70%] h-[70%] flex justify-center items-center shadow-lg z-10">
                                 {props.proof ?
                                     <img src={props.proof} alt="" className="max-w-full max-h-full" /> :
+                                props.sponsor &&
                                     <div>
-                                        
+                                        <p>This person is sponsored</p>
                                     </div>
                                 }
                             </div>

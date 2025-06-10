@@ -1,6 +1,6 @@
-export const uploadProof = (props) => {
-    if (props.selectedCol) {
-        const filePath = `${props.selectedCol.payment}`; // assuming this is your full path
+export const fetchProofImage = (props) => {
+    if (props.selectedCol && props.selectedCol.payment) {
+        const filePath = `${props.selectedCol.payment}`; 
         const { data, error } = props.supabase
             .storage
             .from(props.bucket)
@@ -11,5 +11,7 @@ export const uploadProof = (props) => {
         } else {
             props.setProof(data.publicUrl);
         }
+    } else {
+        props.setProof(null);
     }
 }

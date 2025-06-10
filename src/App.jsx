@@ -8,7 +8,7 @@ import { Routes, Route, useParams } from 'react-router-dom'
 import './App.css'
 
 
-function PasswordRoute() {
+function PasswordRoute(props) {
   const { password } = useParams();
   const filteredSponsor = Sponsors.find((i) => i.password === password);
 
@@ -20,10 +20,14 @@ function PasswordRoute() {
 }
 
 function App() {
+  const { password } = useParams();
+  const filteredSponsor = Sponsors.find((i) => i.password === password);
+  
   return (
     <Routes>
-      <Route path="/:password" element={<PasswordRoute />} />
+      <Route path="/:password" element={<PasswordRoute  />} />
       <Route path="/login" element={<Login/>} />
+      <Route path="/" element={<Login/>} />
        {/* Catch-all route for 404 */}
       {/* <Route path="*" element={<NotFound />} /> */}
     </Routes>

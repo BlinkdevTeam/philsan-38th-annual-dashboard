@@ -7,12 +7,12 @@ import { Toaster } from 'react-hot-toast';
 import PhilsanLogo from "../../assets/philsan_logo.png"
 import Widget from "./Widget";
 import SliderModal from "./SliderModal";
-import { uploadProof } from "./Config/uploadProof";
+import { fetchProofImage } from "./Config/fetchProofImage";
 import RegisterParticipant from "./RegisterParticipant";
 import toast from 'react-hot-toast'
 import emailjs from "@emailjs/browser";
 
-import { onApprove, onDelete, onReject, inviteEmail } from "./Config/crudEmailjs";
+import { onApprove, onDelete, onReject, } from "./Config/crudEmailjs";
 
 const MainTable = ({sponsor}) => {
     const bucket = 'philsan-proof-of-payments';
@@ -29,12 +29,12 @@ const MainTable = ({sponsor}) => {
 
         const fetchData = () => {
             try {
-                if (sponsor.name === "Philsan Secretariat") {
-                    getApproved().then(setApproved);
-                    getPendings().then(setPendings);
-                    getCanceled().then(setCanceled);
-                    getVerified().then(setInvited);
-                } 
+                if(sponsor) {
+                    getApproved(sponsor.name).then(setApproved);
+                    getPendings(sponsor.name).then(setPendings);
+                    getCanceled(sponsor.name).then(setCanceled);
+                    getVerified(sponsor.name).then(setInvited);
+                }
             } catch (err) {
                 console.error("Fetch error:", err);
             }
@@ -99,10 +99,10 @@ const MainTable = ({sponsor}) => {
         };
     }, [sponsor]);
 
-
+    console.log("approved", approved)
 
     useEffect(() => {
-        uploadProof({
+        fetchProofImage({
             selectedCol: selectedCol,
             supabase: supabase,
             setProof: (data) => setProof(data),
