@@ -140,29 +140,12 @@ const MainTable = ({sponsor}) => {
                                         userStatus={userStatus}
                                         setUserStatus={() => setContent("Approved")}
                                     />
-                                    {
-                                        sponsor.name === "Philsan Secretariat" &&
-                                            <Widget
-                                                title={"Pending"}
-                                                value={pendings}
-                                                color={"text-[#fb6c6c]"}
-                                                userStatus={userStatus}
-                                                setUserStatus={() => setContent("Pending")}
-                                            />
-                                    }
                                     <Widget
-                                        title={"Canceled"}
-                                        value={canceled}
-                                        color={"text-[#bfcec4]"}
+                                        title={"Pending"}
+                                        value={pendings}
+                                        color={"text-[#fb6c6c]"}
                                         userStatus={userStatus}
-                                        setUserStatus={() => setContent("Canceled")}
-                                    />
-                                    <Widget
-                                        title={"Invited"}
-                                        value={invited}
-                                        color={"text-[#bfcec4]"}
-                                        userStatus={userStatus}
-                                        setUserStatus={() => setContent("Invited")}
+                                        setUserStatus={() => setContent("Pending")}
                                     />
                                     <button onClick={() => setContent("registration")} className="cursor-pointer py-[10px] bg-[#ffe7a4] mx-[20px] mt-[20px] rounded-lg">Invite Participant</button>
                                 </div>
@@ -172,7 +155,9 @@ const MainTable = ({sponsor}) => {
                 </div>
 				<div className={`relative w-[100%] h-[100vh] overflow-y-scroll bg-[#dce4df] scrollbar-none p-[40px]`}>
 					{ userStatus === "registration" ? 
-                        <RegisterParticipant/> :
+                        <RegisterParticipant
+                            sponsor={sponsor}
+                        /> :
                         <div>
                             <div className="flex gap-[20px] mb-[20px]">
                                 <input 
@@ -202,6 +187,7 @@ const MainTable = ({sponsor}) => {
                     }
 				</div>
                 <SliderModal
+                    sponsor={sponsor}
                     selectedCol={selectedCol}
                     closeModal={() => closeModal()}
                     proof={proof}

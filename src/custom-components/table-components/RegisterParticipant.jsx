@@ -2,9 +2,11 @@ import React, {useState, useRef,} from "react";
 import { textFields, membersRadio, souvenirRadio, sponsorRadio, certRadio } from "./Config/regParticipantsData";
 import { generateToken } from "./Config/generateToken";
 import PhilsanLogo from "../../assets/philsan_logo.png";
-import { createItem, storageUpload } from "../../supabase/supabaseService";
+import { createItem, storageUpload, getParticipant } from "../../supabase/supabaseService";
 
-const RegisterParticipant = () => {
+const RegisterParticipant = ({sponsor}) => {
+    const [isEmailExisting, setisEmailExisting] = useState(false)
+    const [registerSuccess, setRegisterSuccess] = useState(false)
     const fileInputRef = useRef(null);
     const [proof, setProof] = useState(null)
     const [regDetails, setRegDetails] = useState({
@@ -19,9 +21,10 @@ const RegisterParticipant = () => {
             membership: null,
             souvenir: null,
             certificate_needed: null,
-            sponsored: null,
+            sponsored: "N/A",
             sponsor: null,
-            payment: null,
+            // payment: sponsor.name === "Philsan Secretariat" ?  null : "sponsored",
+            payment: "N/A",
             reg_request: new Date().toISOString(),
             reg_status: "pending",
             token: generateToken(16)
@@ -47,18 +50,74 @@ const RegisterParticipant = () => {
     };
 
     const submitRegistration = () => {
-        let filePath;
+        const emailExist = getParticipant(regDetails.email).then(res => console.log("res", res))
         
-        const uniqueFileName = `${Date.now()}_${regDetails.payment}`;
-        filePath = `proofs/${uniqueFileName}`;
+        if(emailExist.length > 0) {
+            setisEmailExisting(true)
+        } else {
+            createItem({
+                email: regDetails.email,
+                first_name: regDetails.first_name,
+                last_name: regDetails.last_name,
+                middle_name: regDetails.middle_name,
+                mobile: regDetails.mobile,
+                company: regDetails.company,
+                position: regDetails.position,
+                agri_license: regDetails.agri_license,
+                membership: regDetails.membership,
+                souvenir: regDetails.souvenir,
+                certificate_needed: regDetails.certificate_needed,
+                sponsored: "N/A",
+                sponsor: sponsor.name !== "Philsan Secretariat" ? sponsor.name : regDetails.sponsor,
+                // payment: regDetails.sponsor === "No Sponsor" ? filePath : null,
+                payment: null,
+                reg_request: new Date().toISOString(),
+                reg_status: "pending",
+                token: generateToken(16),
+                registered_by: sponsor.name !== "Philsan Secretariat" ? "sponsor" : "philsan secretariat"
+            }).then(r => {
+                setisEmailExisting(false)
+            })
+        }
+        
+        // let filePath;
+        
+        // if(regDetails.payment !== "sponsored") {
+        //     const uniqueFileName = `${Date.now()}_${regDetails.payment}`;
+        //     filePath = `proofs/${uniqueFileName}`;
+        // }
 
-        storageUpload(filePath, proof)
-        .then((res) => {
-            if(res) {
-                createItem(regDetails)
-            }
-        })
 
+        // storageUpload(filePath, proof)
+        // .then((res) => {
+        //     if(res) {
+        //         createItem({
+        //             email: regDetails.email,
+        //             first_name: regDetails.first_name,
+        //             last_name: regDetails.last_name,
+        //             middle_name: regDetails.middle_name,
+        //             mobile: regDetails.mobile,
+        //             company: regDetails.company,
+        //             position: regDetails.position,
+        //             agri_license: regDetails.agri_license,
+        //             membership: regDetails.membership,
+        //             souvenir: regDetails.souvenir,
+        //             certificate_needed: regDetails.certificate_needed,
+        //             sponsored: "N/A",
+        //             sponsor: sponsor.name !== "Philsan Secretariat" ? sponsor.name : regDetails.sponsor,
+        //             // payment: regDetails.sponsor === "No Sponsor" ? filePath : null,
+        //             payment: "N/A",
+        //             reg_request: new Date().toISOString(),
+        //             reg_status: "pending",
+        //             token: generateToken(16),
+        //             registered_by: sponsor.name !== "Philsan Secretariat" ? "sponsor" : "philsan secretariat"
+        //         }).then(r => {
+        //             if(r) {
+        //                 console.log(r)
+        //             }
+        //         })
+        //     }
+        // })
     }
 
     const triggerSubmit = (e) => {
@@ -67,33 +126,44 @@ const RegisterParticipant = () => {
         let err = 0;
         
         Object.keys(regDetails).forEach(item => {
-            // if (regDetails[item] === null) {
-            //     err++;
-            //     setFieldError((prev) => (
-            //         {
-            //             ...prev,
-            //             [item]: true
-            //         }
-            //     ))
-            // } else {
-            //     setFieldError((prev) => (
-            //         {
-            //             ...prev,
-            //             [item]: false
-            //         }
-            //     ))
-            // }
 
-            if (regDetails[item] === null) {
-                err++;
-                setRegDetails((prev) => (
-                    {
-                        ...prev,
-                        [item]: false
+            if(item === "sponsor") {
+                if(regDetails["sponsor"] === "No Sponsor") {
+                    if(regDetails["payment"] === null) {
+                        err++;
+                        setRegDetails((prev) => (
+                            {
+                                ...prev,
+                                payment: false
+                            }
+                        ))
                     }
-                ))
-            } else if(regDetails[item] === false) {
-                err++;
+                } else {
+                    console.log("trigger this")
+                    if(regDetails["payment"] === false || regDetails["payment"] === null) {
+                        err++;
+                        setRegDetails((prev) => (
+                            {
+                                ...prev,
+                                payment: "sponsored"
+                            }
+                        ))
+                    }
+                }
+            }
+            
+            if(item !== "sponsor") {
+                if (regDetails[item] === null) {
+                    err++;
+                    setRegDetails((prev) => (
+                        {
+                            ...prev,
+                            [item]: false
+                        }
+                    ))
+                } else if(regDetails[item] === false) {
+                    err++;
+                }
             }
         });
 
@@ -184,64 +254,70 @@ const RegisterParticipant = () => {
                                             </div>
                                         </div>
 
-                                        {/* Sponsors --> */}
-                                        <div className="flex flex-col">
-                                            <p className="font-[700] text-[#1f783b]">Who's your sponsor?</p>
-                                            {
-                                                regDetails["sponsor"] === false &&
-                                                <p className="text-[red]">This field is required</p>
-                                            }
-                                            <div className="flex gap-[50px]">
+                                       {/* Sponsors --> */
+                                        sponsor.name === "Philsan Secretariat" && 
+                                            <div className="flex flex-col">
+                                                <p className="font-[700] text-[#1f783b]">Who's your sponsor?</p>
                                                 {
-                                                    sponsorRadio.map((sponsorGroup, index) => {
-                                                    return (
-                                                        <div key={"sponsorGroup"+index} className="flex flex-col gap-[10px]">
-                                                            {sponsorGroup.map((i, index) => {
-                                                                return (
-                                                                    <div key={"sponsor"+index} className="flex gap-[5px]">
-                                                                        <input type="radio" name="sponsor" value={i} onChange={(e) => handleChange(e)}/>
-                                                                        <p>{i}</p>
-                                                                    </div>
-                                                                )
-                                                            })}
-                                                        </div>
-                                                    )
-                                                    })
+                                                    regDetails["sponsor"] === false &&
+                                                    <p className="text-[red]">This field is required</p>
                                                 }
+                                                <div className="flex gap-[50px]">
+                                                    {
+                                                        sponsorRadio.map((sponsorGroup, index) => {
+                                                        return (
+                                                            <div key={"sponsorGroup"+index} className="flex flex-col gap-[10px]">
+                                                                {sponsorGroup.map((i, index) => {
+                                                                    return (
+                                                                        <div key={"sponsor"+index} className="flex gap-[5px]">
+                                                                            <input type="radio" name="sponsor" value={i} onChange={(e) => handleChange(e)}/>
+                                                                            <p>{i}</p>
+                                                                        </div>
+                                                                    )
+                                                                })}
+                                                            </div>
+                                                        )
+                                                        })
+                                                    }
+                                                </div>
                                             </div>
-                                        </div>
+                                        }
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex flex-col w-[50%] pt-[50px]">
-                                <p className="font-[700] text-[#1f783b]">Please upload your proof of payment</p>
-                                {
-                                    regDetails["payment"] === false &&
-                                    <p className="text-[red]">This field is required</p>
-                                }
-                                <div
-                                    id="upload-area"
-                                    className="flex items-center justify-center w-full p-[50px] rounded-[20px] bg-[#e2e1e1] cursor-pointer text-center"
-                                    onClick={handleUploadClick}
-                                >
-                                    <p className="break-words whitespace-normal max-w-full">{regDetails.payment ? regDetails.payment : "Upload Proof of Payment"}</p>
-                                </div>
+                            {
+                            // sponsor.name === "Philsan Secretariat" && 
+                            //     <div className="flex flex-col w-[50%] pt-[50px]">
+                            //         <p className="font-[700] text-[#1f783b]">Please upload your proof of payment</p>
+                            //         {
+                            //             regDetails["payment"] === false &&
+                            //             <p className="text-[red]">This field is required</p>
+                            //         }
+                            //         <div
+                            //             id="upload-area"
+                            //             className="flex items-center justify-center w-full p-[50px] rounded-[20px] bg-[#e2e1e1] cursor-pointer text-center"
+                            //             onClick={handleUploadClick}
+                            //         >
+                            //             <p className="break-words whitespace-normal max-w-full">{regDetails.payment ? regDetails.payment : "Upload Proof of Payment"}</p>
+                            //         </div>
 
-                                {/* Hidden input field */}
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    name="payment"
-                                    onChange={(e) => handleChange(e)}
-                                    className="hidden"
-                                    accept="image/*"
-                                />
-                            </div>
+                            //         {/* Hidden input field */}
+                            //         <input
+                            //             type="file"
+                            //             ref={fileInputRef}
+                            //             name="payment"
+                            //             onChange={(e) => handleChange(e)}
+                            //             className="hidden"
+                            //             accept="image/*"
+                            //         />
+                            //     </div>
+                            }
 
                             {/* <div className="flex gap-[10px] pt-[20px] items-center w-[600px] items-start pt-[50px]">
                                 <input className="w-[20px] h-[20px] mt-[2px]" type="checkbox" id="" name="" value="E Company" required/>
                                 <p className="italic font-[300]">Include a Data Privacy Statement and Photo/Video Consent agreement</p>
                             </div> */}
+                            
                             <div className="flex pt-[20px]">
                                 <button 
                                     onClick={triggerSubmit} 
@@ -250,6 +326,8 @@ const RegisterParticipant = () => {
                                     <span>Invite</span>
                                 </button>
                             </div>
+                            {isEmailExisting && <p className="text-red">Email Already exist</p> }
+                            {registerSuccess && <p className="text-red">Registration Sent</p> }
                         </div>
                     </div>
                 </div>

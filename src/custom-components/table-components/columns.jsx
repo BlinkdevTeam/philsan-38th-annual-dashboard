@@ -35,6 +35,14 @@ export const columns = (props) => {
             }),
         },
         {
+            name: 'Sponsor',
+            sortable: true,
+		    reorder: true,
+            selector: (row => {
+                return row.sponsor
+            }),
+        },
+        {
             name: 'Time In',
             sortable: true,
 		    reorder: true,
