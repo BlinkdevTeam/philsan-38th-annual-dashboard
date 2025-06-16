@@ -20,7 +20,7 @@ const Login = ({setSponsorIn}) => {
     
     return (
         <div className="w-[100%]">
-            <div className="max-w-[1200]">
+            <div className="max-w-[1200] mx-auto">
                 <div className="flex">
                     <div className=" w-[100%] flex justify-center items-center h-[100vh]">
                         <div className="flex flex-col gap-[20px] mt-[-100px]">
