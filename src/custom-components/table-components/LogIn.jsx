@@ -1,22 +1,20 @@
-import React, {useState} from "react"
+import React, {useState, useEffect} from "react"
 import PhilsanLogo from "../../assets/philsan_logo.png"
 import PhilsanIcon from "../../assets/PhilsanIcon.png"
 import Sponsors from "../../Config/Sponsors";
 import { Link, useNavigate } from 'react-router-dom';
+import { getSponsorByPassword } from "../../supabase/supabaseService";
 
 const Login = ({setSponsorIn}) => {
     const [code, setCode] = useState(null)
 
     const navigate = useNavigate() // 👈 Initialize
 
-    const onSubmit = () => {
-        const filteredSponsor = Sponsors.find((i) => i.password === code) // use find instead of filter
 
-        if (filteredSponsor) {
-            // setSponsorIn(filteredSponsor.sponsor)\
-            navigate(`/${filteredSponsor.password}`) // 👈 Navigate to the desired route
-        } else {
-            alert("Invalid code")
+    const onSubmit = () => {
+        
+        if (code) {
+            navigate(`/${code}`) 
         }
     }
     

@@ -31,12 +31,12 @@ export const getParticipant = async (email) => {
     return data
 }
 
-export const getPendings = async (sponsor) => {
+export const getParticipants = async (sponsor, status) => {
     if(sponsor !== "Philsan Secretariat") {
         const { data, error } = await supabase
             .from('philsan_registration_2025')
             .select('*')
-            .eq('reg_status', "pending")
+            .eq('reg_status', status)
             .eq('sponsor', sponsor)
             .order('created_at', { ascending: false });
 
@@ -46,7 +46,7 @@ export const getPendings = async (sponsor) => {
         const { data, error } = await supabase
             .from('philsan_registration_2025')
             .select('*')
-            .eq('reg_status', "pending")
+            .eq('reg_status', status)
             .order('created_at', { ascending: false });
 
         if (error) throw error;
@@ -54,93 +54,22 @@ export const getPendings = async (sponsor) => {
     }
 };
 
-export const getApproved = async (sponsor) => {
-    if(sponsor !== "Philsan Secretariat") {
-        const { data, error } = await supabase
-            .from('philsan_registration_2025')
-            .select('*')
-            .eq('reg_status', "approved")
-            .eq('sponsor', sponsor)
-            .order('created_at', { ascending: false });
 
-        if (error) throw error;
-        return data;
-    } else {
-        const { data, error } = await supabase
-            .from('philsan_registration_2025')
-            .select('*')
-            .eq('reg_status', "approved")
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        return data;
-    }
-};
-
-export const getCanceled = async (sponsor) => {
-    if(sponsor !== "Philsan Secretariat") {
-        const { data, error } = await supabase
-            .from('philsan_registration_2025')
-            .select('*')
-            .eq('reg_status', "canceled")
-            .eq('sponsor', sponsor)
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        return data;
-    } else {
-        const { data, error } = await supabase
-            .from('philsan_registration_2025')
-            .select('*')
-            .eq('reg_status', "canceled")
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        return data;
-    }
-};
-
-export const getVerified = async (sponsor) => {
-    if(sponsor !== "Philsan Secretariat") {
-        const { data, error } = await supabase
-            .from('philsan_registration_2025')
-            .select('*')
-            .eq('reg_status', "verified")
-            .eq('sponsor', sponsor)
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        return data;
-    } else {
-        const { data, error } = await supabase
-            .from('philsan_registration_2025')
-            .select('*')
-            .eq('reg_status', "verified")
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        return data;
-    }
-};
-
-export const getSponsorsPendings = async (props) => {
+export const getSponsorList = async (props) => {
     const { data, error } = await supabase
-        .from('philsan_registration_2025')
+        .from('philsan_2025_sponsors')
         .select('*')
-        .eq('reg_status', "pending")
-        .eq('sponsor', props.sponsor)
         .order('created_at', { ascending: false });
 
     if (error) throw error;
     return data;
-};
+}
 
-export const getSponsorsApproved = async (props) => {
+export const getSponsorByPassword = async (password) => {
     const { data, error } = await supabase
-        .from('philsan_registration_2025')
+        .from('philsan_2025_sponsors')
         .select('*')
-        .is('reg_status', null)
-        .eq('sponsor', props.sponsor)
+        .eq('password', password)
         .order('created_at', { ascending: false });
 
     if (error) throw error;

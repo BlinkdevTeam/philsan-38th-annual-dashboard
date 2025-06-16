@@ -4,7 +4,7 @@ import { generateToken } from "./Config/generateToken";
 import PhilsanLogo from "../../assets/philsan_logo.png";
 import { createItem, storageUpload, getParticipant } from "../../supabase/supabaseService";
 
-const RegisterParticipant = ({sponsor}) => {
+const RegisterParticipant = ({loggedSponsor}) => {
     const [isEmailExisting, setisEmailExisting] = useState(false)
     const [registerSuccess, setRegisterSuccess] = useState(false)
     const fileInputRef = useRef(null);
@@ -50,7 +50,7 @@ const RegisterParticipant = ({sponsor}) => {
     };
 
     const submitRegistration = () => {
-        const emailExist = getParticipant(regDetails.email).then(res => console.log("res", res))
+        const emailExist = getParticipant(regDetails.email).then(res => res)
         
         if(emailExist.length > 0) {
             setisEmailExisting(true)
@@ -68,7 +68,7 @@ const RegisterParticipant = ({sponsor}) => {
                 souvenir: regDetails.souvenir,
                 certificate_needed: regDetails.certificate_needed,
                 sponsored: "N/A",
-                sponsor: sponsor.name !== "Philsan Secretariat" ? sponsor.name : regDetails.sponsor,
+                sponsor: loggedSponsor.name !== "Philsan Secretariat" ? loggedSponsor.name : regDetails.sponsor,
                 // payment: regDetails.sponsor === "No Sponsor" ? filePath : null,
                 payment: null,
                 reg_request: new Date().toISOString(),
@@ -139,7 +139,6 @@ const RegisterParticipant = ({sponsor}) => {
                         ))
                     }
                 } else {
-                    console.log("trigger this")
                     if(regDetails["payment"] === false || regDetails["payment"] === null) {
                         err++;
                         setRegDetails((prev) => (
@@ -171,8 +170,6 @@ const RegisterParticipant = ({sponsor}) => {
            return console.log("Fiil all required inputs")
         }  submitRegistration()
     };
-
-    console.log("regDetails", regDetails)
 
     return (
         <div className="w-[100%]">
@@ -255,7 +252,7 @@ const RegisterParticipant = ({sponsor}) => {
                                         </div>
 
                                        {/* Sponsors --> */
-                                        sponsor.name === "Philsan Secretariat" && 
+                                        loggedSponsor.name === "Philsan Secretariat" && 
                                             <div className="flex flex-col">
                                                 <p className="font-[700] text-[#1f783b]">Who's your sponsor?</p>
                                                 {

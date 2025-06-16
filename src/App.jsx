@@ -1,27 +1,45 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import LandingPage from './custom-components/LandingPage'
 import Login from './custom-components/table-components/LogIn'
 import Sponsors from './Config/Sponsors'
 import { Routes, Route, useParams } from 'react-router-dom'
+import { getSponsorByPassword } from './supabase/supabaseService'
 import './App.css'
 
+function PasswordRoute() {
+  const { password } = useParams()
+  const [sponsor, setSponsor] = useState(null)
+  const [error, setError] = useState(false)
 
-function PasswordRoute(props) {
-  const { password } = useParams();
-  const filteredSponsor = Sponsors.find((i) => i.password === password);
+  useEffect(() => {
+    const fetchSponsor = async () => {
+      const res = await getSponsorByPassword(password)
+      if (res.length > 0) {
+        setSponsor(res)
+      } else {
+        setError(true)
+      }
+    }
 
-  if (filteredSponsor) {
-    return <LandingPage sponsor={filteredSponsor}/>;
+    fetchSponsor()
+  }, [password])
+
+  if (error) {
+    return <div>Invalid code. <a href="/login">Go back</a></div>
   }
 
-  return <>Invalid sponsor or link.</>;
+  if (!sponsor) {
+    return <div>Loading...</div>
+  }
+
+  return <LandingPage sponsor={sponsor} />
 }
+
 
 function App() {
   const { password } = useParams();
-  const filteredSponsor = Sponsors.find((i) => i.password === password);
   
   return (
     <Routes>

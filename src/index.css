@@ -27,12 +27,12 @@
     display: none;                      /* Chrome, Safari */
   }
   .scrollbar-custom::-webkit-scrollbar {
-    width: 8px;
+    background-color: rgba(219, 241, 220, 0.6);
+    width: 5px;
   }
   .scrollbar-custom::-webkit-scrollbar-thumb {
-    background-color: rgba(100, 100, 100, 0.6);
+    background-color: rgba(49, 78, 57, 0.6);
     border-radius: 4px;
-    width: 1px;
   }
   .scrollbar-custom::-webkit-scrollbar-track {
     background-color: transparent;
