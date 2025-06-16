@@ -4,13 +4,12 @@ import { getParticipants } from "../../supabase/supabaseService";
 const SponsorWidget = (props) => {
     const [participants, setParticipants] = useState([])
 
-
     useEffect(() => {
         getParticipants(props.sponsor, "approved").then(setParticipants)
     }, [participants])
 
     return(
-        <div onClick={() => props.setUserStatus()} className="cursor-pointer gap-[10px] justify-center items-center group">
+        <div onClick={() => props.setUserStatus()} className="cursor-pointer gap-[10px] justify-center items-center group w-[100%]">
             <div className="flex bg-[]">
                 <div className={`flex gap-[10px] items-center w-[100%] ${props.userStatus === props.title ? "bg-[#0c3719]" : "bg-[#18622f]"} group-hover:bg-[#124d24] py-[2px] px-[10px] rounded-l-[8px]`}>
                     <p className="text-[#ffffff] text-[12px]">{props.title}</p>

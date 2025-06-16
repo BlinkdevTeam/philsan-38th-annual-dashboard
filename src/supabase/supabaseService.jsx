@@ -7,6 +7,33 @@ export const createItem = async (data) => {
     return result
 }
 
+export const createSponsor = async (data) => {
+    console.log(data)
+  const { sponsor_name, password } = data;
+
+  // 1. Check if sponsor with same name or email already exists (case-insensitive)
+  const { data: existing, error: checkError } = await supabase
+    .from('philsan_2025_sponsors')
+    .select('*')
+    .or(`sponsor_name.ilike.${sponsor_name},password.ilike.${password}`);
+
+  if (checkError) throw checkError;
+
+  if (existing && existing.length > 0) {
+    throw new Error(`Sponsor "${sponsor_name}" or email "${password}" already exists.`);
+  }
+
+  // 2. Insert new sponsor
+  const { data: result, error } = await supabase
+    .from('philsan_2025_sponsors')
+    .insert([data]);
+
+  if (error) throw error;
+
+  return result;
+};
+
+
 // Read
 export const getItems = async () => {
     const { data, error } = await supabase.from('philsan_registration_2025').select('*').order('created_at', { ascending: false });
@@ -59,7 +86,7 @@ export const getSponsorList = async (props) => {
     const { data, error } = await supabase
         .from('philsan_2025_sponsors')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('sponsor_name', { ascending: true });
 
     if (error) throw error;
     return data;
