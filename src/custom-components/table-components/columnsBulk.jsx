@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import DataTable, { createTheme } from 'react-data-table-component';
 import { updateItem } from '../../supabase/supabaseService';
 
-export const columns = (props) => {        
+export const columnsBulk = (props) => {        
     const column = [
         {
             name: 'Email',
@@ -49,21 +49,12 @@ export const columns = (props) => {
             selector: (row => {
                 return row.reg_status
             }),
-        },
-        {
-            name: 'Time In',
+        },{
+            name: 'Upload Status',
             sortable: true,
 		    reorder: true,
             selector: (row => {
-                return row.time_in ? new Date(row.time_in).toLocaleString() : ''
-            }),
-        },
-        {
-            name: 'Time Out',
-            sortable: true,
-		    reorder: true,
-            selector: (row => {
-                return row.time_out ? new Date(row.time_out).toLocaleString() : ''
+                return <span className={`${row.upload_failed && "text-[red]"} ${row.upload_failed && "text-[green]"}`}>{row.upload_failed ? row.upload_failed : row.upload_success}</span>
             }),
         },
     ];

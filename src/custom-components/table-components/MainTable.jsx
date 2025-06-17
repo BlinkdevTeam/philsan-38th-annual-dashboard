@@ -2,13 +2,10 @@ import { useEffect, useState } from "react"
 import DataTable from 'react-data-table-component';
 import { columns } from './columns';
 import { 
-    getItems, 
-    deleteWithCharaters, 
     getSponsorList,
     getParticipants,
     createSponsor,
-    updateItem, 
-    deleteItem } from '../../supabase/supabaseService';
+    deleteSponsor } from '../../supabase/supabaseService';
 import { supabase } from "/supabaseClient";
 import { Toaster } from 'react-hot-toast';
 import PhilsanLogo from "../../assets/philsan_logo.png"
@@ -20,6 +17,8 @@ import SponsorWidget from "./SponsorWidget";
 import toast from 'react-hot-toast'
 import emailjs from "@emailjs/browser";
 import { onApprove, onDelete, onReject, } from "./Config/crudEmailjs";
+import DownloadCsv from "./DownloadCsv";
+import UploadCsv from "./UploadCsv";
 
 const MainTable = ({sponsor}) => {
     const [toFilterSponsor, setTofilterSponsor] = useState(null)
@@ -57,7 +56,10 @@ const MainTable = ({sponsor}) => {
             item.sponsor?.toLowerCase().includes(lower)
         );
     });
+    const [openPopupId, setOpenPopupId] = useState(null);
+    const [goToRegsitration, setgoToRegistration] = useState(false)
 
+    console.log("toFilterSponsor", toFilterSponsor)
 
 
     useEffect(() => {
@@ -99,10 +101,8 @@ const MainTable = ({sponsor}) => {
 
                 // Only update if this is the same sponsor
                 const isRelevant = toFilterSponsor === "Philsan Secretariat" || newData.sponsor === toFilterSponsor;
-                console.log("irelevant", isRelevant)
                 if (!isRelevant) return;
 
-                console.log("newdata", newData)
                 updateByStatus(newData);
             }
             ).subscribe();
@@ -147,6 +147,13 @@ const MainTable = ({sponsor}) => {
         })
     }, [selectedCol]);
 
+    useEffect(() => {
+        document.addEventListener("click", handleOutsideClick);
+        return () => {
+            document.removeEventListener("click", handleOutsideClick);
+        };
+    }, []);
+
     const closeModal = () => {
         setSelectedCol(null)
         setProof(null)
@@ -157,10 +164,12 @@ const MainTable = ({sponsor}) => {
             setUserStatus(status)
             setTofilterSponsor("Philsan Secretariat")
             setSponsorPass(pass)
+            handleGotoReg(null)
         } else {
             setUserStatus(status)
             setTofilterSponsor(sponsor)
             setSponsorPass(pass)
+            handleGotoReg(null)
         }
     }
 
@@ -184,19 +193,38 @@ const MainTable = ({sponsor}) => {
         createSponsor(sponsors)
     }
 
+    const handleDeleteSponsor = (item) => {
+        deleteSponsor({id: item.id, name: item.sponsor_name})
+    }
+
+    const handleDelPopup = (id, index) => {
+        setOpenPopupId(prev => (prev === id ? null : id));
+        // handleDeleteSponsor(item, index)
+    }
+
+    const handleOutsideClick = (e) => {
+        if (!e.target.closest(".popup")) {
+            setOpenPopupId(null);
+        }
+    };
+
+    
+    const handleGotoReg = (reg) => {
+        setgoToRegistration(reg)
+    }
 
     return (
         <div>
             <Toaster position="top-left" reverseOrder={false} />
             <div className="flex">
-                <div className="sidebar flex flex-col justify-between w-[400px] overflow-y-scroll scrollbar-none">
+                <div className="sidebar flex flex-col justify-between w-[400px] h-[100vh] overflow-y-scroll scrollbar-none">
                     <div className={`bg-[#1f783b]`}>
                         <div className={`h-max`}>
                             <div className="py-[32px]">
                                 <div className="w-[100%] flex pl-[20px] pb-[50px]">
-                                        <div className="bg-[#dce4df] px-[25px] pb-[5px] pt-[10px] rounded-[10px] flex justify-center">
-                                            <img src={PhilsanLogo} alt="" width="150px" />
-                                        </div>
+                                    <div className="bg-[#dce4df] px-[25px] pb-[5px] pt-[10px] rounded-[10px] flex justify-center">
+                                        <img src={PhilsanLogo} alt="" width="150px" />
+                                    </div>
                                 </div>
                                 <div className="px-[20px] pb-[20px]">
                                     <div className="flex flex-col gap-[2px]">
@@ -209,10 +237,10 @@ const MainTable = ({sponsor}) => {
                                         /> 
                                         <SponsorWidget
                                             title={'Non Sponsored'}
-                                            sponsor={"No Sponsor"}
+                                            sponsor={"Non-Sponsored"}
                                             color={"text-[#f9b700]"}
                                             userStatus={userStatus}
-                                            setUserStatus={() => setContent("Approved", "No Sponsor", null)}
+                                            setUserStatus={() => setContent("Approved", "Non-Sponsored", null)}
                                         /> 
                                     </div>
                                 </div>
@@ -234,11 +262,16 @@ const MainTable = ({sponsor}) => {
                                                 item.sponsor_name.toLowerCase().includes(searchTerm.toLowerCase())) &&
                                                 item.sponsor_name !== "Philsan Secretariat"
                                             )
-                                            .map((item) => (
-                                                <div className="flex w-[100%] items-center gap-[5px]">
-                                                    <svg className="cursor-pointer" width="12" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            .map((item, index) => (
+                                                <div className="flex w-[100%] items-center gap-[5px] relative">
+                                                    <svg onClick={(e) => {e.stopPropagation(); handleDelPopup(item.id)}} className="cursor-pointer" width="12" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path fill="#709b7d" d="M7 8C7 7.44772 6.55228 7 6 7C5.44772 7 5 7.44772 5 8H7ZM5 16C5 16.5523 5.44772 17 6 17C6.55228 17 7 16.5523 7 16H5ZM11 8C11 7.44772 10.5523 7 10 7C9.44771 7 9 7.44772 9 8H11ZM9 16C9 16.5523 9.44771 17 10 17C10.5523 17 11 16.5523 11 16H9ZM3.09202 18.782L3.54601 17.891H3.54601L3.09202 18.782ZM2.21799 17.908L3.10899 17.454L3.10899 17.454L2.21799 17.908ZM13.782 17.908L12.891 17.454V17.454L13.782 17.908ZM12.908 18.782L12.454 17.891H12.454L12.908 18.782ZM1 4C0.447715 4 0 4.44771 0 5C0 5.55228 0.447715 6 1 6V4ZM15 6C15.5523 6 16 5.55228 16 5C16 4.44771 15.5523 4 15 4V6ZM3.5 5C3.5 5.55228 3.94772 6 4.5 6C5.05228 6 5.5 5.55228 5.5 5H3.5ZM10.5 5C10.5 5.55228 10.9477 6 11.5 6C12.0523 6 12.5 5.55228 12.5 5H10.5ZM5 8V16H7V8H5ZM9 8V16H11V8H9ZM13 5V15.8H15V5H13ZM10.8 18H5.2V20H10.8V18ZM1 5V15.8H3V5H1ZM5.2 18C4.62345 18 4.25117 17.9992 3.96784 17.9761C3.69617 17.9539 3.59545 17.9162 3.54601 17.891L2.63803 19.673C3.01641 19.8658 3.40963 19.9371 3.80497 19.9694C4.18864 20.0008 4.65645 20 5.2 20V18ZM1 15.8C1 16.3436 0.999222 16.8114 1.03057 17.195C1.06287 17.5904 1.13419 17.9836 1.32698 18.362L3.10899 17.454C3.0838 17.4045 3.04612 17.3038 3.02393 17.0322C3.00078 16.7488 3 16.3766 3 15.8H1ZM3.54601 17.891C3.35785 17.7951 3.20487 17.6422 3.10899 17.454L1.32698 18.362C1.6146 18.9265 2.07354 19.3854 2.63803 19.673L3.54601 17.891ZM13 15.8C13 16.3766 12.9992 16.7488 12.9761 17.0322C12.9539 17.3038 12.9162 17.4045 12.891 17.454L14.673 18.362C14.8658 17.9836 14.9371 17.5904 14.9694 17.195C15.0008 16.8114 15 16.3436 15 15.8H13ZM10.8 20C11.3436 20 11.8114 20.0008 12.195 19.9694C12.5904 19.9371 12.9836 19.8658 13.362 19.673L12.454 17.891C12.4045 17.9162 12.3038 17.9539 12.0322 17.9761C11.7488 17.9992 11.3766 18 10.8 18V20ZM12.891 17.454C12.7951 17.6422 12.6422 17.7951 12.454 17.891L13.362 19.673C13.9265 19.3854 14.3854 18.9265 14.673 18.362L12.891 17.454ZM1 6H2V4H1V6ZM2 6H14V4H2V6ZM14 6H15V4H14V6ZM5.5 4.2C5.5 3.06743 6.53305 2 8 2V0C5.60095 0 3.5 1.79795 3.5 4.2H5.5ZM8 2C9.46695 2 10.5 3.06743 10.5 4.2H12.5C12.5 1.79795 10.399 0 8 0V2ZM3.5 4.2V5H5.5V4.2H3.5ZM10.5 4.2V5H12.5V4.2H10.5Z"/>
                                                     </svg>
+                                                    {openPopupId === item.id && (
+                                                        <div className="bg-[#dce4df] hover:bg-[#c64c4c] text-[12px] popup absolute bottom-0 left-4 z-50 px-[8px] py-[2px] rounded shadow cursor-pointer">
+                                                            <button className="" onClick={() => handleDeleteSponsor(item)}>Delete Sponsor</button>
+                                                        </div>
+                                                    )}
                                                     <SponsorWidget
                                                         title={item.sponsor_name}
                                                         sponsor={item.sponsor_name}
@@ -285,10 +318,19 @@ const MainTable = ({sponsor}) => {
                     </div>
                 </div>
 				<div className={`relative w-[100%] h-[100vh] overflow-y-scroll bg-[#dce4df] scrollbar-none p-[40px]`}>
-					{ userStatus === "registration" ? 
-                        <RegisterParticipant
-                            loggedSponsor={toFilterSponsor}
-                        /> :
+					{ goToRegsitration ? 
+                        goToRegsitration === "single" ?
+                            <div className="pt-[50px]">
+                                <RegisterParticipant
+                                    loggedSponsor={toFilterSponsor}
+                                    setgoToRegistration={() => handleGotoReg(null)}
+                                />
+                            </div> : 
+                        goToRegsitration === "bulk" && 
+                            <UploadCsv
+                                loggedSponsor={toFilterSponsor}
+                                setgoToRegistration={() => handleGotoReg(null)}
+                            /> :
                         <div>
                             <div className="flex gap-[20px] mb-[20px]">
                                 <input 
@@ -306,32 +348,41 @@ const MainTable = ({sponsor}) => {
                                         value={approved}
                                         color={"text-[#f9b700]"}
                                         userStatus={userStatus}
-                                        setUserStatus={() => setContent("Approved")}
+                                        setUserStatus={() => setContent("Approved", toFilterSponsor, sponsorPass)}
+                                        
                                     />
                                     <Widget
                                         title={"Pending"}
                                         value={pendings}
                                         color={"text-[#fb6c6c]"}
                                         userStatus={userStatus}
-                                        setUserStatus={() => setContent("Pending")}
+                                        setUserStatus={() => setContent("Pending", toFilterSponsor, sponsorPass)}
                                     />
                                     <Widget
                                         title={"Canceled"}
                                         value={canceled}
                                         color={"text-[#f9b700]"}
                                         userStatus={userStatus}
-                                        setUserStatus={() => setContent("Canceled")}
+                                        setUserStatus={() => setContent("Canceled", toFilterSponsor, sponsorPass)}
                                     />
-                                    <button onClick={() => setContent("registration")} className="cursor-pointer py-[8px] px-[10px] bg-[#ffe7a4] text-[14px] rounded-lg">Invite Participant</button>
+                                    <div  onClick={() => handleGotoReg("bulk")} className="cursor-pointer py-[8px] px-[10px] bg-[#ffe7a4] text-[14px] rounded-lg">
+                                        <button  className="text-[12px] text-[#000000] cursor-pointer"><strong>Bulk</strong> Registration via CSV</button>
+                                    </div>
+                                    <button onClick={() => handleGotoReg("single")} className="cursor-pointer py-[8px] px-[10px] bg-[#ffe7a4] text-[14px] rounded-lg">Register New Participant</button>
                                 </div>
-                                <div>
-                                    {
-                                        toFilterSponsor !== "Philsan Secretariat" && toFilterSponsor !== "No Sponsor" &&
-                                        <div className="flex flex-col gap-[1px]">
-                                            <p className="text-[12px]">Sponsor: <strong>{toFilterSponsor}</strong></p>
-                                            <p className="text-[12px]">Password: <strong>{sponsorPass}</strong></p>
-                                        </div>
-                                    }
+                                <div className="flex items-center gap-[10px]">
+                                    <DownloadCsv
+                                        data={filteredData}
+                                    />
+                                    <div>
+                                        {
+                                            toFilterSponsor !== "Philsan Secretariat" && toFilterSponsor !== "Non-Sponsored" &&
+                                            <div className="bg-[#1f783b] py-[8px] px-[20px] text-[#dce4df] text-[11px] rounded-lg">
+                                                <p className="font-[200]">Sponsor: <span className="font-[800]">{toFilterSponsor}</span></p>
+                                                <p className="font-[200]">Password: <span className="font-[800]">{sponsorPass}</span></p>
+                                            </div>
+                                        }
+                                    </div>
                                 </div>
                             </div>
                             <DataTable
@@ -352,8 +403,9 @@ const MainTable = ({sponsor}) => {
                     selectedCol={selectedCol}
                     closeModal={() => closeModal()}
                     proof={proof}
-                    onApprove={() => onApprove(
+                    onApprove={(data) => onApprove(
                         {
+                            data: data,
                             selectedCol: selectedCol,
                             closeModal: () => closeModal()
                         }

@@ -8,7 +8,6 @@ export const createItem = async (data) => {
 }
 
 export const createSponsor = async (data) => {
-    console.log(data)
   const { sponsor_name, password } = data;
 
   // 1. Check if sponsor with same name or email already exists (case-insensitive)
@@ -136,6 +135,17 @@ export const deleteWithCharaters = async () => {
         .from('philsan_registration_2025')
         .delete()
         .ilike('email', '%@example.com');
+
+    if (error) throw error;
+    return data;
+}
+
+export const deleteSponsor = async ({id, name}) => {
+    const { data, error } = await supabase
+        .from('philsan_2025_sponsors')
+        .delete()
+        .eq("id", id)
+        .eq("sponsor_name", name)
 
     if (error) throw error;
     return data;

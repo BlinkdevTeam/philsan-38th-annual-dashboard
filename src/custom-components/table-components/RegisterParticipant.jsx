@@ -3,8 +3,9 @@ import { textFields, membersRadio, souvenirRadio, sponsorRadio, certRadio } from
 import { generateToken } from "./Config/generateToken";
 import PhilsanLogo from "../../assets/philsan_logo.png";
 import { createItem, storageUpload, getParticipant } from "../../supabase/supabaseService";
+import UploadCsv from "./UploadCsv";
 
-const RegisterParticipant = ({loggedSponsor}) => {
+const RegisterParticipant = ({loggedSponsor, setgoToRegistration}) => {
     const [isEmailExisting, setisEmailExisting] = useState(false)
     const [registerSuccess, setRegisterSuccess] = useState(false)
     const fileInputRef = useRef(null);
@@ -29,7 +30,7 @@ const RegisterParticipant = ({loggedSponsor}) => {
             reg_status: "pending",
             token: generateToken(16)
         });
-
+    
     const handleChange = (e) => {
         if(e.target.name === "payment" && e.target.files.length > 0 ) {
             setProof(e.target.files[0])
@@ -68,14 +69,16 @@ const RegisterParticipant = ({loggedSponsor}) => {
                 souvenir: regDetails.souvenir,
                 certificate_needed: regDetails.certificate_needed,
                 sponsored: "N/A",
-                sponsor: loggedSponsor.name !== "Philsan Secretariat" ? loggedSponsor.name : regDetails.sponsor,
-                // payment: regDetails.sponsor === "No Sponsor" ? filePath : null,
+                sponsor: loggedSponsor !== "Philsan Secretariat" ? loggedSponsor : "Non-Sponsored",
+                // payment: regDetails.sponsor === "Non-Sponsored" ? filePath : null,
                 payment: null,
                 reg_request: new Date().toISOString(),
                 reg_status: "pending",
                 token: generateToken(16),
-                registered_by: sponsor.name !== "Philsan Secretariat" ? "sponsor" : "philsan secretariat"
+                registered_by: loggedSponsor.name !== "Philsan Secretariat" ? "sponsor" : "philsan secretariat"
             }).then(r => {
+                alert("Regsitration Successful")
+                setgoToRegistration()
                 setisEmailExisting(false)
             })
         }
@@ -105,7 +108,7 @@ const RegisterParticipant = ({loggedSponsor}) => {
         //             certificate_needed: regDetails.certificate_needed,
         //             sponsored: "N/A",
         //             sponsor: sponsor.name !== "Philsan Secretariat" ? sponsor.name : regDetails.sponsor,
-        //             // payment: regDetails.sponsor === "No Sponsor" ? filePath : null,
+        //             // payment: regDetails.sponsor === "Non-Sponsored" ? filePath : null,
         //             payment: "N/A",
         //             reg_request: new Date().toISOString(),
         //             reg_status: "pending",
@@ -128,7 +131,7 @@ const RegisterParticipant = ({loggedSponsor}) => {
         Object.keys(regDetails).forEach(item => {
 
             if(item === "sponsor") {
-                if(regDetails["sponsor"] === "No Sponsor") {
+                if(regDetails["sponsor"] === "Non-Sponsored") {
                     if(regDetails["payment"] === null) {
                         err++;
                         setRegDetails((prev) => (
@@ -177,6 +180,14 @@ const RegisterParticipant = ({loggedSponsor}) => {
                 <div className="flex">
                     <div className="w-[100%] flex justify-center items-start h-[100vh]">
                         <div className="bg-[#ffffff] px-[30px] pb-[60px] pt-[40px] rounded-lg shadow-md">
+                            <div className="flex justify-between">
+                                <div className="flex gap-[10px] items-center cursor-pointer pb-[40px]" onClick={() => setgoToRegistration()}>
+                                    <svg width="14" height="12" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M14.9998 7H1.99985M6.99985 1L1.70696 6.29289C1.31643 6.68342 1.31643 7.31658 1.70696 7.70711L6.99985 13" stroke="#111111" strokeWidth="2" strokeLinecap="round"/>
+                                    </svg>
+                                    <h6 className="text-[#67706a] text-[16px]">Register New Participant</h6>
+                                </div>
+                            </div>
                             <div className="flex gap-[50px]">
                                 <div className="">
                                     <div className="flex flex-col gap-[10px]">
@@ -252,7 +263,7 @@ const RegisterParticipant = ({loggedSponsor}) => {
                                         </div>
 
                                        {/* Sponsors --> */
-                                        loggedSponsor.name === "Philsan Secretariat" && 
+                                        loggedSponsor === "Philsan Secretariat" && 
                                             <div className="flex flex-col">
                                                 <p className="font-[700] text-[#1f783b]">Who's your sponsor?</p>
                                                 {
@@ -282,45 +293,12 @@ const RegisterParticipant = ({loggedSponsor}) => {
                                     </div>
                                 </div>
                             </div>
-                            {
-                            // sponsor.name === "Philsan Secretariat" && 
-                            //     <div className="flex flex-col w-[50%] pt-[50px]">
-                            //         <p className="font-[700] text-[#1f783b]">Please upload your proof of payment</p>
-                            //         {
-                            //             regDetails["payment"] === false &&
-                            //             <p className="text-[red]">This field is required</p>
-                            //         }
-                            //         <div
-                            //             id="upload-area"
-                            //             className="flex items-center justify-center w-full p-[50px] rounded-[20px] bg-[#e2e1e1] cursor-pointer text-center"
-                            //             onClick={handleUploadClick}
-                            //         >
-                            //             <p className="break-words whitespace-normal max-w-full">{regDetails.payment ? regDetails.payment : "Upload Proof of Payment"}</p>
-                            //         </div>
-
-                            //         {/* Hidden input field */}
-                            //         <input
-                            //             type="file"
-                            //             ref={fileInputRef}
-                            //             name="payment"
-                            //             onChange={(e) => handleChange(e)}
-                            //             className="hidden"
-                            //             accept="image/*"
-                            //         />
-                            //     </div>
-                            }
-
-                            {/* <div className="flex gap-[10px] pt-[20px] items-center w-[600px] items-start pt-[50px]">
-                                <input className="w-[20px] h-[20px] mt-[2px]" type="checkbox" id="" name="" value="E Company" required/>
-                                <p className="italic font-[300]">Include a Data Privacy Statement and Photo/Video Consent agreement</p>
-                            </div> */}
-                            
                             <div className="flex pt-[20px]">
                                 <button 
                                     onClick={triggerSubmit} 
                                     className="cursor-pointer bg-[#F9B700] hover:bg-[#ffe700] py-[20px] px-[100px] text-[#ffffff] rounded-lg transition-background-color duration-300 ease-in-out"
                                 >
-                                    <span>Invite</span>
+                                    <span>Register</span>
                                 </button>
                             </div>
                             {isEmailExisting && <p className="text-red">Email Already exist</p> }

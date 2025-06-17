@@ -41,7 +41,7 @@ export const certRadio = ["yes", "no"]
 
 export const sponsorRadio = [
     [
-        "No Sponsor",
+        "Non-Sponsored",
         "Alltech",
         "Ariela",
         "AWAP",
