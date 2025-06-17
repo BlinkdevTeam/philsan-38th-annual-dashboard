@@ -16,6 +16,7 @@ function PasswordRoute() {
   useEffect(() => {
     const fetchSponsor = async () => {
       const res = await getSponsorByPassword(password)
+      
       if (res.length > 0) {
         setSponsor(res)
       } else {
