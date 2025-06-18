@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import LandingPage from './custom-components/LandingPage'
 import Login from './custom-components/table-components/LogIn'
+import QrCode from './custom-components/table-components/QrCode'
 import Sponsors from './Config/Sponsors'
 import { Routes, Route, useParams } from 'react-router-dom'
 import { getSponsorByPassword } from './supabase/supabaseService'
@@ -47,6 +48,7 @@ function App() {
       <Route path="/:password" element={<PasswordRoute  />} />
       <Route path="/login" element={<Login/>} />
       <Route path="/" element={<Login/>} />
+      <Route path="/download-qr" element={<QrCode/>} />
        {/* Catch-all route for 404 */}
       {/* <Route path="*" element={<NotFound />} /> */}
     </Routes>
