@@ -49,7 +49,6 @@ const QrCode = () => {
                 </div>
                 <div className="flex h-[100vh] justify-center items-center">
                     <div ref={elementRef} className="relative overflow-hidden rounded-xl w-[400px] h-[740px]">
-                        {/* <div className="relative shadow-lg overflow-hidden rounded-xl w-[400px] p-[20px] bg-[linear-gradient(to_bottom,#ffffff_0%,#ffffff_60%,#CBF9B6_100%)]"> */}
                         <div className="w-[100%] flex flex-col items-center text-center z-[1] justify-center w-full overflow-visible">
                             <div className="z-[1]"> 
                                 <div className="px-[20px] pt-[40px]">
