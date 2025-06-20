@@ -14,10 +14,12 @@ export const onApprove = (props) => {
         reg_status: "approved"
     })
     .then(() => {
+        const fullname = first_name + " " + last_name
         emailjs.send(
             'service_1qkyi2i', //your_service_id
             'template_f6qckle', //your_template_id
             {email: col.email},
+            {participant_name: fullname},
             'sOTpCYbD5KllwgbCD' //your_public_key
         )
         .then((result) => {
