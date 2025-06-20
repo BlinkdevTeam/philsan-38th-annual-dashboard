@@ -44,8 +44,6 @@ const SliderModal = (props) => {
     }, [props.selectedCol])
 
     const reg_status = props.selectedCol ? props.selectedCol.reg_status : null;
-    
-    console.log(userDetails)
 
     return (
         <>

@@ -8,12 +8,9 @@ const QrCode = () => {
     const params = new URLSearchParams(window.location.search);
     const eValue = params.get('e');
     const navigate = useNavigate();
-    console.log(eValue);
 
 
     const elementRef = useRef();
-
-    console.log("elemref", elementRef.current)
 
     useEffect(() => {
         getParticipant(eValue).then((res) => {

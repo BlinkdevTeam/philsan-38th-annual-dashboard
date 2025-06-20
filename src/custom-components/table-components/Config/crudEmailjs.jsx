@@ -13,19 +13,22 @@ export const onApprove = (props) => {
         company: data.company,
         reg_status: "approved"
     })
-    .then(() => {
-        const fullname = first_name + " " + last_name
+    .then((res) => {
+        const fullname = res[0].first_name + " " + res[0].last_name
+
+        console.log("fullname", fullname)
         emailjs.send(
             'service_1qkyi2i', //your_service_id
             'template_f6qckle', //your_template_id
-            {email: col.email},
-            {participant_name: fullname},
+            {email: col.email, participant_name: fullname},
             'sOTpCYbD5KllwgbCD' //your_public_key
         )
         .then((result) => {
+            console.log("results", result)
             props.closeModal();
         })
         .catch((error) => {
+            console.log("Error", error)
             props.closeModal();
         });
     });

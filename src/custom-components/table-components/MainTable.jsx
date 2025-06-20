@@ -59,8 +59,6 @@ const MainTable = ({sponsor}) => {
     const [openPopupId, setOpenPopupId] = useState(null);
     const [goToRegsitration, setgoToRegistration] = useState(false)
 
-    console.log("toFilterSponsor", toFilterSponsor)
-
 
     useEffect(() => {
         if (sponsor && sponsor[0] && sponsor[0].sponsor_name) {
