@@ -1,5 +1,5 @@
 import qrBackground from "../../assets/qr-background.png"
-
+import { getParticipant } from "../../supabase/supabaseService";
 import { useNavigate } from "react-router-dom";
 import React, { useRef, useEffect } from 'react';
 import html2canvas from 'html2canvas';
