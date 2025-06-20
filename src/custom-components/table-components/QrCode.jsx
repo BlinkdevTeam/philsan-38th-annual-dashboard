@@ -51,7 +51,7 @@ const QrCode = () => {
                 </div>
                 <div className="flex h-[100vh] justify-center items-center">
                     <div ref={elementRef} className="relative overflow-hidden rounded-xl w-[400px] h-[740px]">
-                        <div className="w-[100%] flex flex-col items-center text-center z-[1] justify-center w-full overflow-visible">
+                        <div className="w-[100%] flex flex-col items-center text-center z-[2] justify-center w-full overflow-visible">
                             <div className="z-[1]"> 
                                 <div className="px-[20px] pt-[40px]">
                                     <div className="w-[150px] mx-auto">
