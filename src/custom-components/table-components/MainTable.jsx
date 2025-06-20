@@ -180,9 +180,24 @@ const MainTable = ({sponsor}) => {
     }
 
     const handleAddSponsor = (e) => {
+        const generateRandomCode = () => {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            
+            let result = '';
+            
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            return result;
+        };
+        
+        console.log(e.target.value)
+
         setToAddSponsor(prev => ({
             ...prev,
-            [e.target.name]: e.target.value
+            sponsor_name: e.target.value,
+            password: e.target.value ? generateRandomCode()  + "-" + e.target.value : null,
         }));
     }
 
@@ -296,14 +311,15 @@ const MainTable = ({sponsor}) => {
                                             />
                                         </div>
                                         <div className="px-[20px] pb-[5px]">
-                                            <p className="text-[10px] text-[#dce4df] opacity-[0.5]">Create Password</p>
+                                            <p className="text-[10px] text-[#dce4df]">This is Auto generated</p>
                                             <input 
-                                                className="p-[8px] bg-[#dce4df] w-[100%] rounded-lg text-[12px]" 
+                                                className="p-[8px] bg-[#f5f5dc] w-[100%] rounded-lg text-[12px]" 
                                                 name="password"
                                                 type="text" 
                                                 placeholder="Enter Password" 
                                                 onChange={handleAddSponsor}
                                                 value={toAddSponsor.password} 
+                                                readOnly
                                             />
                                         </div>
                                         <div className="px-[20px]">
