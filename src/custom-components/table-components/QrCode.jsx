@@ -1,11 +1,37 @@
 import qrBackground from "../../assets/qr-background.png"
+
 import { useNavigate } from "react-router-dom";
+import React, { useRef, useEffect } from 'react';
+import html2canvas from 'html2canvas';
 
 const QrCode = () => {
     const params = new URLSearchParams(window.location.search);
     const eValue = params.get('e');
     const navigate = useNavigate();
     console.log(eValue);
+
+
+    const elementRef = useRef();
+
+    useEffect(() => {
+        getParticipant(eValue).then((res) => {
+            if(res) {
+                handleDownload
+            } else {
+                handleNavigation
+            }
+        })
+    }, [])
+
+    const handleDownload = async () => {
+        const canvas = await html2canvas(elementRef.current);
+        const dataUrl = canvas.toDataURL('image/png');
+
+        const link = document.createElement('a');
+        link.href = dataUrl;
+        link.download = `my-philsan-38th-annual-convetion-qr-${eValue}.png`;
+        link.click();
+    };
 
     const handleNavigation = () => {
         navigate("https://philsan.org/38th-annual-convention/registration/")
@@ -21,8 +47,8 @@ const QrCode = () => {
                     <img className="w-full h-full object-cover" src={qrBackground} alt="" />
                 </div>
                 <div className="flex h-[100vh] justify-center items-center">
-                    <div className="relative overflow-hidden rounded-xl w-[400px] h-[740px]">
-                    {/* <div className="relative shadow-lg overflow-hidden rounded-xl w-[400px] p-[20px] bg-[linear-gradient(to_bottom,#ffffff_0%,#ffffff_60%,#CBF9B6_100%)]"> */}
+                    <div ref={elementRef} className="relative overflow-hidden rounded-xl w-[400px] h-[740px]">
+                        {/* <div className="relative shadow-lg overflow-hidden rounded-xl w-[400px] p-[20px] bg-[linear-gradient(to_bottom,#ffffff_0%,#ffffff_60%,#CBF9B6_100%)]"> */}
                         <div className="w-[100%] flex flex-col items-center text-center z-[1] justify-center w-full overflow-visible">
                             <div className="z-[1]"> 
                                 <div className="px-[20px] pt-[40px]">
