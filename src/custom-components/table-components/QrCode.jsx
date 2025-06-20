@@ -16,7 +16,8 @@ const QrCode = () => {
     useEffect(() => {
         getParticipant(eValue).then((res) => {
             if(res) {
-                handleDownload
+                console.log(res)
+                handleDownload()
             } else {
                 handleNavigation
             }
