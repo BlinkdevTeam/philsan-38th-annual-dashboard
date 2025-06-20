@@ -66,6 +66,14 @@ export const columns = (props) => {
                 return row.time_out ? new Date(row.time_out).toLocaleString() : ''
             }),
         },
+        {
+            name: 'Timestamp',
+            sortable: true,
+		    reorder: true,
+            selector: (row => {
+                return row.created_at ? new Date(row.created_at).toLocaleString() : ''
+            }),
+        },
     ];
 
     return column;
