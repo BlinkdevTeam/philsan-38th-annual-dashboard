@@ -1,21 +1,63 @@
 import qrBackground from "../../assets/qr-background.png"
 
 const QrCode = () => {
+    const email = "sample"
+
     return (
-        <div className="relative block">
+        <div className="">
             <div className="h-screen w-screen overflow-hidden absolute z-[-1]">
                 <img className="w-full h-full object-cover" src={qrBackground} alt="" />
             </div>
             <div className="flex h-[100vh] justify-center items-center">
-                <div className="shadow-lg p-[20px]">
-                    <div className="flex flex-col items-center text-center">
-                        <div className="w-[200px]">
-                            <img src="https://shvutlcgljqiidqxqrru.supabase.co/storage/v1/object/public/philsan-email-assets//convention-logo.png" alt="" />
+                <div className="relative overflow-hidden rounded-xl w-[400px] h-[740px]">
+                {/* <div className="relative shadow-lg overflow-hidden rounded-xl w-[400px] p-[20px] bg-[linear-gradient(to_bottom,#ffffff_0%,#ffffff_60%,#CBF9B6_100%)]"> */}
+                    <div className="w-[100%] flex flex-col items-center text-center z-[1] justify-center w-full overflow-visible">
+                        <div className="z-[1]"> 
+                            <div className="px-[20px] pt-[40px]">
+                                <div className="w-[150px] mx-auto">
+                                    <img
+                                    src="https://shvutlcgljqiidqxqrru.supabase.co/storage/v1/object/public/philsan-email-assets//convention-logo.png"
+                                    alt="Convention Logo"
+                                    className="w-full h-auto"
+                                    />
+                                </div>
+
+                                <div className="flex flex-col justify-center items-center text-center gap-[20px] pt-[30px] py-[30px]">
+                                    <div className="flex">
+                                    <p className="text-[14px] text-center font-bold text-wrap">
+                                        Innovating for a Sustainable Future: Harnessing Technology and Alternative Solutions in Animal Nutrition and Health
+                                    </p>
+                                    </div>
+
+                                    <p className="text-[22px] font-bold text-[#1F773A] fraunces">September 30, 2025</p>
+
+                                    <div className="flex flex-col items-center bg-gradient-to-r from-[#1F773A] to-[#EDB221] w-full py-[10px] rounded-tl-[40px] rounded-br-[40px]">
+                                    <p className="text-[16px] text-[#ffffff] fraunces">Okada Manila Paranaque City,</p>
+                                    <p className="text-[16px] text-[#ffffff] fraunces">Philippines</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="w-[100%] flex justify-center">
+                                <div className="bg-[#ffffff] p-[20px] rounded-xl">
+                                    <img className="w-[200px]" src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${email}`} alt="" />
+                                </div>
+                            </div>
+                            <div className="w-[100%] absolute bottom-[0px]">
+                                <img src="https://shvutlcgljqiidqxqrru.supabase.co/storage/v1/object/public/philsan-email-assets//Sponsors%20Logo@3x-8%201.png" alt="" />
+                            </div>
                         </div>
-                        <p>Innovating for a Sustainable Future: Harnessing<br/> Technology and Alternative Solutions in Animal<br/> Nutrition and Health</p>
-                        <p>SEPTEMBER 30, 2025</p>
-                        <p>Okada Manila, Paranaque City, Philippines</p>
+
+
+                        {/* Overflowing bottom image */}
+                        <div className="absolute bottom-[0px] w-[110%] flex justify-center items-center pointer-events-none">
+                            <img
+                                src="https://shvutlcgljqiidqxqrru.supabase.co/storage/v1/object/public/philsan-email-assets//Philsan%20Ticket%20BG@3x-8%201.png"
+                                alt="Decorative Background"
+                                className="w-full max-w-none h-auto opacity-[.5]"
+                            />
+                        </div>
                     </div>
+                    <img className="absolute shadow-lg top-[0px] w-full left-0 z-[-1]" src="https://shvutlcgljqiidqxqrru.supabase.co/storage/v1/object/public/philsan-email-assets//ticket_bg.png" alt="" />
                 </div>
             </div>
         </div>

@@ -4,6 +4,15 @@
   
 }
 
+/* style.css */
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
+.fraunces {
+  font-family: 'Fraunces', serif;
+}
+
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;              /* Firefox */
