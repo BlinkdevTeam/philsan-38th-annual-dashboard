@@ -21,7 +21,7 @@ const QrCode = () => {
                 console.log(res)
                 setTimeout(() => {
                     handleDownload()
-                }, 2000)
+                }, 1000)
             } else {
                 handleNavigation()
             }
