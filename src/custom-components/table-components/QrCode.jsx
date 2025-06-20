@@ -13,7 +13,7 @@ const QrCode = () => {
 
     const elementRef = useRef();
 
-    console.log("elemref", elementRef)
+    console.log("elemref", elementRef.current)
 
     useEffect(() => {
         getParticipant(eValue).then((res) => {
