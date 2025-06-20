@@ -87,7 +87,7 @@ const QrCode = () => {
                         <div className="bg-white p-[10px] rounded-xl mb-4">
                             <img
                             className="w-[200px] h-[200px]"
-                            src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qrValue)}`}
+                            src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(eValue)}`}
                             alt="QR Code"
                             />
                         </div>
