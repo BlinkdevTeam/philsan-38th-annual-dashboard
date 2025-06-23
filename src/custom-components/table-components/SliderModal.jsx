@@ -73,7 +73,7 @@ const SliderModal = (props) => {
                                         <path d="M13 1L1 13M13 13L1 1.00001" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"/>
                                     </svg>
                                     <p className="text-[#f9f9f9]">Cancel</p>
-                                    <div>
+                                    {/* <div>
                                         <input 
                                             className={`font-[400] rounded-lg p-[10px] ${condition ? "bg-[#ede9dc] text-[#93896c]" : "bg-[#acc5b4] text-[#000000]"} text-[14px]`} 
                                             name={key} 
@@ -85,7 +85,7 @@ const SliderModal = (props) => {
                                                 }))
                                             }
                                         />
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div onClick={() => props.onDelete()} className="flex gap-[10px] items-center px-[20px] py-[10px] rounded-[8px] bg-[#acc5b4] hover:bg-[#1f783b] cursor-pointer transition-background-color duration-300 ease-in-out">
                                     <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -124,8 +124,9 @@ const SliderModal = (props) => {
                                     {userDetails.email &&
                                         fieldKeys.map((key) => {
                                             const condition = key === "email" || key === "sponsor" || key === "reg_request";
-                                            
-                                            return (
+
+                                            if(reg_status === "canceled") {
+                                                return (
                                                 <div key={key} className="flex flex-col gap-[2px]">
                                                     <p className="text-[#67706a] text-[12px]">{userDetails?.fileNames?.[key]}:</p>
                                                     <input 
@@ -144,6 +145,29 @@ const SliderModal = (props) => {
                                                     />
                                                 </div>
                                             )
+                                            } else {
+                                                if(key !== "remarks") {
+                                                    return (
+                                                        <div key={key} className="flex flex-col gap-[2px]">
+                                                            <p className="text-[#67706a] text-[12px]">{userDetails?.fileNames?.[key]}:</p>
+                                                            <input 
+                                                                className={`font-[400] rounded-lg p-[10px] ${condition ? "bg-[#ede9dc] text-[#93896c]" : "bg-[#acc5b4] text-[#000000]"} text-[14px]`} 
+                                                                name={key} 
+                                                                value={userDetails[key]}
+                                                                onChange={(e) =>
+                                                                    setUserDetails((prev) => ({
+                                                                    ...prev,
+                                                                    [key]: e.target.value,
+                                                                    }))
+                                                                }
+                                                            readOnly={
+                                                                reg_status !== "approved" || condition
+                                                            }
+                                                            />
+                                                        </div>
+                                                    )
+                                                }
+                                            }
                                     })}
                                 </div>
                             </div>
