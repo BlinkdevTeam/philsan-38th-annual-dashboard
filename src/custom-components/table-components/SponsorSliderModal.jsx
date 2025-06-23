@@ -5,6 +5,7 @@ const SponsorSliderModal = (props) => {
     const fieldKeys = [
         "email",
         "first_name",
+        "middle_name",
         "last_name",
         "mobile",
         "company",
@@ -17,6 +18,7 @@ const SponsorSliderModal = (props) => {
     const fieldLabels = {
         email: "Email",
         first_name: "First Name",
+        middle_name: "Middle Name",
         last_name: "Last Name",
         mobile: "Mobile",
         company: "Company",
