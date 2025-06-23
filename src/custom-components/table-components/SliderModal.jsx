@@ -12,7 +12,8 @@ const SliderModal = (props) => {
         "membership",
         "agri_license",
         "sponsor",
-        "reg_request"   
+        "reg_request", 
+        "remarks"
     ];
 
     const fieldLabels = {
@@ -25,7 +26,8 @@ const SliderModal = (props) => {
         membership: "Membership",
         agri_license: "Agri License",
         sponsor: "Sponsor",
-        reg_request: "Request Date"
+        reg_request: "Request Date", 
+        remarks: "Remarks"
     };
 
     const [userDetails, setUserDetails] = useState({});
@@ -66,11 +68,24 @@ const SliderModal = (props) => {
                                     </svg>
                                     <p className="text-[#f9f9f9]">Accept</p>
                                 </div>
-                                <div onClick={() => props.onReject()} className="flex gap-[10px] items-center px-[20px] py-[10px] rounded-[8px] bg-[#acc5b4] hover:bg-[#1f783b] cursor-pointer transition-background-color duration-300 ease-in-out">
+                                <div onClick={() => props.onReject()} className=" relative flex gap-[10px] items-center px-[20px] py-[10px] rounded-[8px] bg-[#acc5b4] hover:bg-[#1f783b] cursor-pointer transition-background-color duration-300 ease-in-out">
                                     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M13 1L1 13M13 13L1 1.00001" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"/>
                                     </svg>
                                     <p className="text-[#f9f9f9]">Cancel</p>
+                                    <div>
+                                        <input 
+                                            className={`font-[400] rounded-lg p-[10px] ${condition ? "bg-[#ede9dc] text-[#93896c]" : "bg-[#acc5b4] text-[#000000]"} text-[14px]`} 
+                                            name={key} 
+                                            value={userDetails[key]}
+                                            onChange={(e) =>
+                                                setUserDetails((prev) => ({
+                                                ...prev,
+                                                [key]: e.target.value,
+                                                }))
+                                            }
+                                        />
+                                    </div>
                                 </div>
                                 <div onClick={() => props.onDelete()} className="flex gap-[10px] items-center px-[20px] py-[10px] rounded-[8px] bg-[#acc5b4] hover:bg-[#1f783b] cursor-pointer transition-background-color duration-300 ease-in-out">
                                     <svg width="16" height="20" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -109,7 +124,9 @@ const SliderModal = (props) => {
                                     {userDetails.email &&
                                         fieldKeys.map((key) => {
                                             const condition = key === "email" || key === "sponsor" || key === "reg_request";
-                                            return (
+
+                                            if(reg_status === "canceled") {
+                                                return (
                                                 <div key={key} className="flex flex-col gap-[2px]">
                                                     <p className="text-[#67706a] text-[12px]">{userDetails?.fileNames?.[key]}:</p>
                                                     <input 
@@ -128,6 +145,29 @@ const SliderModal = (props) => {
                                                     />
                                                 </div>
                                             )
+                                            } else {
+                                                if(key !== "remarks") {
+                                                    return (
+                                                        <div key={key} className="flex flex-col gap-[2px]">
+                                                            <p className="text-[#67706a] text-[12px]">{userDetails?.fileNames?.[key]}:</p>
+                                                            <input 
+                                                                className={`font-[400] rounded-lg p-[10px] ${condition ? "bg-[#ede9dc] text-[#93896c]" : "bg-[#acc5b4] text-[#000000]"} text-[14px]`} 
+                                                                name={key} 
+                                                                value={userDetails[key]}
+                                                                onChange={(e) =>
+                                                                    setUserDetails((prev) => ({
+                                                                    ...prev,
+                                                                    [key]: e.target.value,
+                                                                    }))
+                                                                }
+                                                            readOnly={
+                                                                reg_status !== "approved" || condition
+                                                            }
+                                                            />
+                                                        </div>
+                                                    )
+                                                }
+                                            }
                                     })}
                                 </div>
                             </div>
