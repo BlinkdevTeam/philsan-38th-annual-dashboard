@@ -108,7 +108,7 @@ const SponsorSliderModal = (props) => {
                                                             }))
                                                         }
                                                     readOnly={
-                                                        reg_status !== "approved" || condition
+                                                        reg_status === condition
                                                     }
                                                     />
                                                 </div>
