@@ -125,29 +125,51 @@ const SliderModal = (props) => {
                                         fieldKeys.map((key) => {
                                             const condition = key === "email" || key === "sponsor" || key === "reg_request";
 
-                                            if(reg_status === "canceled") {
-                                                return (
-                                                <div key={key} className="flex flex-col gap-[2px]">
-                                                    <p className="text-[#67706a] text-[12px]">{userDetails?.fileNames?.[key]}:</p>
-                                                    <input 
-                                                        className={`font-[400] rounded-lg p-[10px] ${condition ? "bg-[#ede9dc] text-[#93896c]" : "bg-[#acc5b4] text-[#000000]"} text-[14px]`} 
-                                                        name={key} 
-                                                        value={userDetails[key]}
-                                                        onChange={(e) =>
-                                                            setUserDetails((prev) => ({
-                                                            ...prev,
-                                                            [key]: e.target.value,
-                                                            }))
-                                                        }
-                                                    readOnly={
-                                                        reg_status !== "approved" || condition
-                                                    }
-                                                    />
-                                                </div>
-                                            )
-                                            } else {
-                                                if(key !== "remarks") {
-                                                    return (
+                                            // if(reg_status === "canceled") {
+                                            //     return (
+                                            //     <div key={key} className="flex flex-col gap-[2px]">
+                                            //         <p className="text-[#67706a] text-[12px]">{userDetails?.fileNames?.[key]}:</p>
+                                            //         <input 
+                                            //             className={`font-[400] rounded-lg p-[10px] ${condition ? "bg-[#ede9dc] text-[#93896c]" : "bg-[#acc5b4] text-[#000000]"} text-[14px]`} 
+                                            //             name={key} 
+                                            //             value={userDetails[key]}
+                                            //             onChange={(e) =>
+                                            //                 setUserDetails((prev) => ({
+                                            //                 ...prev,
+                                            //                 [key]: e.target.value,
+                                            //                 }))
+                                            //             }
+                                            //         readOnly={
+                                            //             reg_status !== "approved" || condition
+                                            //         }
+                                            //         />
+                                            //     </div>
+                                            // )
+                                            // } else {
+                                            //     if(key !== "remarks") {
+                                            //         return (
+                                            //             <div key={key} className="flex flex-col gap-[2px]">
+                                            //                 <p className="text-[#67706a] text-[12px]">{userDetails?.fileNames?.[key]}:</p>
+                                            //                 <input 
+                                            //                     className={`font-[400] rounded-lg p-[10px] ${condition ? "bg-[#ede9dc] text-[#93896c]" : "bg-[#acc5b4] text-[#000000]"} text-[14px]`} 
+                                            //                     name={key} 
+                                            //                     value={userDetails[key]}
+                                            //                     onChange={(e) =>
+                                            //                         setUserDetails((prev) => ({
+                                            //                         ...prev,
+                                            //                         [key]: e.target.value,
+                                            //                         }))
+                                            //                     }
+                                            //                 readOnly={
+                                            //                     reg_status !== "approved" || condition
+                                            //                 }
+                                            //                 />
+                                            //             </div>
+                                            //         )
+                                            //     }
+                                            // }
+
+                                            return (
                                                         <div key={key} className="flex flex-col gap-[2px]">
                                                             <p className="text-[#67706a] text-[12px]">{userDetails?.fileNames?.[key]}:</p>
                                                             <input 
@@ -166,8 +188,6 @@ const SliderModal = (props) => {
                                                             />
                                                         </div>
                                                     )
-                                                }
-                                            }
                                     })}
                                 </div>
                             </div>
