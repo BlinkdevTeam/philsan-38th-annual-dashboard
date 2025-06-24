@@ -2,10 +2,17 @@ import { supabase } from "/supabaseClient"
 
 // Create
 export const createItem = async (data) => {
-    const { data: result, error } = await supabase.from('philsan_registration_2025').insert([data])
+    const { data: result, error } = await supabase.from('philsan_registration_2025').insert([data]).select('*')
     if (error) throw error
     return result
 }
+
+export const createDeletedItem = async (data) => {
+    const { data: result, error } = await supabase.from('philsan_deleted_participants').insert([data]).select('*')
+    if (error) throw error
+    return result
+}
+
 
 export const createSponsor = async (data) => {
   const { sponsor_name, password } = data;

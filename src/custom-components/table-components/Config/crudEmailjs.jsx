@@ -1,5 +1,5 @@
 import emailjs from "@emailjs/browser";
-import { getItems, deleteWithCharaters, updateItem, deleteItem } from '../../../supabase/supabaseService';
+import { getItems, deleteWithCharaters, updateItem, deleteItem, createItem } from '../../../supabase/supabaseService';
 
 export const onApprove = (props) => {
     const col= props.selectedCol
@@ -11,6 +11,8 @@ export const onApprove = (props) => {
         last_name: data.last_name,
         mobile: data.mobile,
         company: data.company,
+        agri_license: data.agri_license,
+        remarks: null,
         reg_status: "approved"
     })
     .then((res) => {
@@ -28,6 +30,7 @@ export const onApprove = (props) => {
             props.closeModal();
         })
         .catch((error) => {
+            console.log("trigger error")
             console.log("Error", error)
             props.closeModal();
         });
@@ -44,11 +47,22 @@ export const onSave = (props) => {
         last_name: data.last_name,
         mobile: data.mobile,
         company: data.company,
+        remarks: `${data.remarks} --> /* This data was edited by the sponsor */ <-- ${new Date().toLocaleString()}`
     })
+    .then((result) => {
+        props.closeModal();
+    })
+    .catch((error) => {
+        props.closeModal();
+    });
 }
 
 export const onReject = (props) => {
-    updateItem(props.selectedCol.email, {reg_status: "canceled"})
+    console.log("props", props)
+    updateItem(props.selectedCol.email, {
+        reg_status: "canceled",
+        remarks: props.data.remarks
+    })
     .then(() => {
         emailjs.send(
             'service_1qkyi2i', //your_service_id

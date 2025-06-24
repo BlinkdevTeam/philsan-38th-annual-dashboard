@@ -12,7 +12,8 @@ const SponsorSliderModal = (props) => {
         "membership",
         "agri_license",
         "sponsor",
-        "reg_request"   
+        "reg_request",
+        "remarks"
     ];
 
     const fieldLabels = {
@@ -25,7 +26,8 @@ const SponsorSliderModal = (props) => {
         membership: "Membership",
         agri_license: "Agri License",
         sponsor: "Sponsor",
-        reg_request: "Request Date"
+        reg_request: "Request Date",
+        remarks: "Remarks"
     };
 
     const [userDetails, setUserDetails] = useState({});
@@ -95,7 +97,7 @@ const SponsorSliderModal = (props) => {
                                 <div className="flex flex-col gap-[10px] text-[18px]">
                                     {userDetails.email &&
                                         fieldKeys.map((key) => {
-                                            const condition = key === "email" || key === "sponsor" || key === "reg_request";
+                                            const condition = key === "email" || key === "sponsor" || key === "reg_request" || key === "remarks";
                                             return (
                                                 <div key={key} className="flex flex-col gap-[2px]">
                                                     <p className="text-[#67706a] text-[12px]">{userDetails?.fileNames?.[key]}:</p>
@@ -109,9 +111,7 @@ const SponsorSliderModal = (props) => {
                                                             [key]: e.target.value,
                                                             }))
                                                         }
-                                                    readOnly={
-                                                        reg_status === condition
-                                                    }
+                                                    readOnly={condition}
                                                     />
                                                 </div>
                                             )

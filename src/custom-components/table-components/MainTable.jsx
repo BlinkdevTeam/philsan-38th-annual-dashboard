@@ -77,6 +77,7 @@ const MainTable = ({sponsor}) => {
                 getParticipants(toFilterSponsor, "canceled").then(setCanceled);
                 getSponsorList().then(setSponsorList);
             } catch (err) {
+                console.log("trigger this error first")
                 console.error("Fetch error:", err);
             }
         };
@@ -424,14 +425,16 @@ const MainTable = ({sponsor}) => {
                             closeModal: () => closeModal()
                         }
                     )}
-                    onReject={() => onReject(
+                    onReject={(data) => onReject(
                         {
+                            data: data,
                             selectedCol: selectedCol,
                             closeModal: () => closeModal()
                         }
                     )}
-                    onDelete={() => onDelete(
+                    onDelete={(data) => onDelete(
                         {
+                            data: data,
                             selectedCol: selectedCol,
                             closeModal: () => closeModal()
                         }
