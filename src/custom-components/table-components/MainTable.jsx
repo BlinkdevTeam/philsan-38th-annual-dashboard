@@ -87,50 +87,59 @@ const MainTable = ({sponsor}) => {
         const channel = supabase
             .channel("realtime:philsan_registration_2025")
             .on(
-            "postgres_changes",
-            {
-                event: "*",
-                schema: "public",
-                table: "philsan_registration_2025",
-            },
-            (payload) => {
-                // console.log("🔁 Realtime payload:", payload);
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "philsan_registration_2025",
+                },
+                (payload) => {
+                    // console.log("🔁 Realtime payload:", payload);
 
-                const { new: newData } = payload;
+                    const { new: newData } = payload;
 
-                // Only update if this is the same sponsor
-                const isRelevant = toFilterSponsor === "Philsan Secretariat" || newData.sponsor === toFilterSponsor;
-                if (!isRelevant) return;
+                    // Only update if this is the same sponsor
+                    const isRelevant = toFilterSponsor === "Philsan Secretariat" || newData.sponsor === toFilterSponsor;
+                    if (!isRelevant) return;
 
-                updateByStatus(newData);
-            }
+                    // updateByStatus(newData);
+
+                    fetchData();
+                }
             ).subscribe();
 
-        const updateByStatus = (data) => {
-            const updateState = (setter) => {
-            setter((prev) => {
-                const exists = prev.find((item) => item.id === data.id);
-                return exists
-                ? prev.map((item) => (item.id === data.id ? data : item))
-                : [data, ...prev];
-            });
-            };
+        // const updateByStatus = (data) => {
+        //     // First remove this data from all lists
+        //     setApproved((prev) => prev.filter((item) => item.id !== data.id));
+        //     setPendings((prev) => prev.filter((item) => item.id !== data.id));
+        //     setCanceled((prev) => prev.filter((item) => item.id !== data.id));
+        //     setInvited((prev) => prev.filter((item) => item.id !== data.id)); // optional if you have this
 
-            switch (data.reg_status) {
-                case "pending":
-                    updateState(setPendings);
-                    break;
-                case "invited":
-                    updateState(setInvited);
-                    break;
-                case "canceled":
-                    updateState(setCanceled);
-                    break;
-                case "approved":
-                    updateState(setApproved);
-                    break;
-            }
-        };
+        //     // Then add it to the correct list
+        //     const updateState = (setter) => {
+        //         setter((prev) => {
+        //             const exists = prev.find((item) => item.id === data.id);
+        //             return exists
+        //                 ? prev.map((item) => (item.id === data.id ? data : item))
+        //                 : [data, ...prev];
+        //         });
+        //     };
+
+        //     switch (data.reg_status) {
+        //         case "pending":
+        //             updateState(setPendings);
+        //             break;
+        //         case "invited":
+        //             updateState(setInvited);
+        //             break;
+        //         case "canceled":
+        //             updateState(setCanceled);
+        //             break;
+        //         case "approved":
+        //             updateState(setApproved);
+        //             break;
+        //     }
+        // };
 
         return () => {
             supabase.removeChannel(channel);
@@ -153,7 +162,14 @@ const MainTable = ({sponsor}) => {
         };
     }, []);
 
-    const closeModal = () => {
+    const closeModal = (action, data) => {
+        if(action === "approve") {
+            toast.success(data.first_name + " " + data.last_name + " was APPROVED") 
+        } else if(action === "cancel") {
+            toast.success(data.first_name + " " + data.last_name + " was CANCELED") 
+        } else if(action === "delete") {
+            toast.success(data.first_name + " " + data.last_name + " was DELETED") 
+        }
         setSelectedCol(null)
         setProof(null)
     }
@@ -422,21 +438,21 @@ const MainTable = ({sponsor}) => {
                         {
                             data: data,
                             selectedCol: selectedCol,
-                            closeModal: () => closeModal()
+                            closeModal: () => closeModal("approve", data)
                         }
                     )}
                     onReject={(data) => onReject(
                         {
                             data: data,
                             selectedCol: selectedCol,
-                            closeModal: () => closeModal()
+                            closeModal: () => closeModal("cancel", data)
                         }
                     )}
                     onDelete={(data) => onDelete(
                         {
                             data: data,
                             selectedCol: selectedCol,
-                            closeModal: () => closeModal()
+                            closeModal: () => closeModal("delete", data)
                         }
                     )}
                 />

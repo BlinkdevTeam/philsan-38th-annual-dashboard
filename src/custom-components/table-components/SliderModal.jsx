@@ -174,7 +174,7 @@ const SliderModal = (props) => {
                 remarks: userDetails.remarks // this will overwrite the existing remarks field
             };
 
-            if (props.selectedCol.remarks) {
+            if (userDetails.remarks) {
                 createDeletedItem(data).then(res => {
                     if (res.length > 0) {
                         props.onDelete();
