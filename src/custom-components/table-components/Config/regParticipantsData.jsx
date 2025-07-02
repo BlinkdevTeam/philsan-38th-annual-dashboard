@@ -29,7 +29,7 @@ export const textFields = [
     },
     {
         name: "agri_license",
-        placeholder: "Agricultural License Number"
+        placeholder: "Agricultural License Number (Enter 'N/A' if not applicable)"
     }
 ]
 
