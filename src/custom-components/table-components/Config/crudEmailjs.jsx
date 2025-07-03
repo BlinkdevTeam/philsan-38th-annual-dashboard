@@ -80,7 +80,7 @@ export const onReject = (props) => {
 }
 
 export const onDelete = (props) => {
-    deleteItem(props.selectedCol.email)
+    deleteItem(props.selectedCol.id, props.selectedCol.email)
     props.closeModal()
 }
 

@@ -8,7 +8,29 @@ export const createItem = async (data) => {
 }
 
 export const createDeletedItem = async (data) => {
-    const { data: result, error } = await supabase.from('philsan_deleted_participants').insert([data]).select('*')
+    const toSubmitData = {
+        user_id: data.id,
+        email: data.email,
+        first_name: data.first_name,
+        middle_name: data.middle_name,
+        last_name: data.last_name,
+        mobile: data.mobile,
+        company: data.company,
+        membership: data.membership,
+        agri_license: data.agri_license,
+        sponsor: data.sponsor,
+        reg_request: data.req_request, 
+        reg_status: data.reg_status,
+        position: data.position,
+        souvenir: data.souvenir,
+        certificate_needed: data.certificate_needed,
+        payment: data.payment,
+        token: data.token,
+        time_in: data.time_in,
+        time_out: data.time_out,
+        remarks: data.remarks
+    };
+    const { data: result, error } = await supabase.from('philsan_deleted_participants').insert([toSubmitData]).select('*')
     if (error) throw error
     return result
 }
@@ -131,8 +153,12 @@ export const updateItem = async (email, data) => {
 }
 
 // Delete
-export const deleteItem = async (email) => {
-    const { data: result, error } = await supabase.from('philsan_registration_2025').delete().eq('email', email)
+export const deleteItem = async (id, email) => {
+    const { data: result, error } = await supabase
+    .from('philsan_registration_2025')
+    .delete()
+    .eq('id', id)
+    .eq('email', email)
     if (error) throw error
     return result
 }

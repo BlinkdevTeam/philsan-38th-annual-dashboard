@@ -175,6 +175,7 @@ const SliderModal = (props) => {
             };
 
             if (userDetails.remarks) {
+                console.log('data', data)
                 createDeletedItem(data).then(res => {
                     if (res.length > 0) {
                         props.onDelete();

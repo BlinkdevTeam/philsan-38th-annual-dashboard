@@ -168,7 +168,7 @@ const MainTable = ({sponsor}) => {
         } else if(action === "cancel") {
             toast.success(data.first_name + " " + data.last_name + " was CANCELED") 
         } else if(action === "delete") {
-            toast.success(data.first_name + " " + data.last_name + " was DELETED") 
+            toast.success("Account was DELETED") 
         }
         setSelectedCol(null)
         setProof(null)
