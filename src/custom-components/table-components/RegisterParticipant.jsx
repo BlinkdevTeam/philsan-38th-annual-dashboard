@@ -1,13 +1,14 @@
-import React, {useState, useRef,} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import { textFields, membersRadio, souvenirRadio, sponsorRadio, certRadio } from "./Config/regParticipantsData";
 import { generateToken } from "./Config/generateToken";
 import PhilsanLogo from "../../assets/philsan_logo.png";
-import { createItem, storageUpload, getParticipant } from "../../supabase/supabaseService";
+import { createItem, storageUpload, getParticipant, getSponsorList } from "../../supabase/supabaseService";
 import UploadCsv from "./UploadCsv";
 
 const RegisterParticipant = ({loggedSponsor, setgoToRegistration}) => {
     const [isEmailExisting, setisEmailExisting] = useState(false)
     const [registerSuccess, setRegisterSuccess] = useState(false)
+    const [sponsorList, setSponsorList] = useState([])
     const fileInputRef = useRef(null);
     const [proof, setProof] = useState(null)
     const [regDetails, setRegDetails] = useState({
@@ -31,7 +32,14 @@ const RegisterParticipant = ({loggedSponsor, setgoToRegistration}) => {
             token: generateToken(16)
         });
     
+    useEffect(() => {
+        getSponsorList().then(setSponsorList);
+    }, [])
+    
     const handleChange = (e) => {
+        console.log(e.target.value)
+
+        console.log(e.target.name)
         if(e.target.name === "payment" && e.target.files.length > 0 ) {
             setProof(e.target.files[0])
             setRegDetails(prev => ({
@@ -69,7 +77,7 @@ const RegisterParticipant = ({loggedSponsor, setgoToRegistration}) => {
                 souvenir: regDetails.souvenir,
                 certificate_needed: regDetails.certificate_needed,
                 sponsored: "N/A",
-                sponsor: loggedSponsor !== "Philsan Secretariat" ? loggedSponsor : "Non-Sponsored",
+                sponsor: loggedSponsor !== "Philsan Secretariat" ? loggedSponsor : regDetails.sponsor,
                 // payment: regDetails.sponsor === "Non-Sponsored" ? filePath : null,
                 payment: null,
                 reg_request: new Date().toISOString(),
@@ -82,45 +90,6 @@ const RegisterParticipant = ({loggedSponsor, setgoToRegistration}) => {
                 setisEmailExisting(false)
             })
         }
-        
-        // let filePath;
-        
-        // if(regDetails.payment !== "sponsored") {
-        //     const uniqueFileName = `${Date.now()}_${regDetails.payment}`;
-        //     filePath = `proofs/${uniqueFileName}`;
-        // }
-
-
-        // storageUpload(filePath, proof)
-        // .then((res) => {
-        //     if(res) {
-        //         createItem({
-        //             email: regDetails.email,
-        //             first_name: regDetails.first_name,
-        //             last_name: regDetails.last_name,
-        //             middle_name: regDetails.middle_name,
-        //             mobile: regDetails.mobile,
-        //             company: regDetails.company,
-        //             position: regDetails.position,
-        //             agri_license: regDetails.agri_license,
-        //             membership: regDetails.membership,
-        //             souvenir: regDetails.souvenir,
-        //             certificate_needed: regDetails.certificate_needed,
-        //             sponsored: "N/A",
-        //             sponsor: sponsor.name !== "Philsan Secretariat" ? sponsor.name : regDetails.sponsor,
-        //             // payment: regDetails.sponsor === "Non-Sponsored" ? filePath : null,
-        //             payment: "N/A",
-        //             reg_request: new Date().toISOString(),
-        //             reg_status: "pending",
-        //             token: generateToken(16),
-        //             registered_by: sponsor.name !== "Philsan Secretariat" ? "sponsor" : "philsan secretariat"
-        //         }).then(r => {
-        //             if(r) {
-        //                 console.log(r)
-        //             }
-        //         })
-        //     }
-        // })
     }
 
     const triggerSubmit = (e) => {
@@ -262,34 +231,28 @@ const RegisterParticipant = ({loggedSponsor, setgoToRegistration}) => {
                                             </div>
                                         </div>
 
-                                       {/* Sponsors --> */
-                                        loggedSponsor === "Philsan Secretariat" && 
+                                        {loggedSponsor === "Philsan Secretariat" && (
                                             <div className="flex flex-col">
                                                 <p className="font-[700] text-[#1f783b]">Who's your sponsor?</p>
-                                                {
-                                                    regDetails["sponsor"] === false &&
+                                                
+                                                {regDetails["sponsor"] === false && (
                                                     <p className="text-[red]">This field is required</p>
-                                                }
-                                                <div className="flex gap-[50px]">
-                                                    {
-                                                        sponsorRadio.map((sponsorGroup, index) => {
-                                                        return (
-                                                            <div key={"sponsorGroup"+index} className="flex flex-col gap-[10px]">
-                                                                {sponsorGroup.map((i, index) => {
-                                                                    return (
-                                                                        <div key={"sponsor"+index} className="flex gap-[5px]">
-                                                                            <input type="radio" name="sponsor" value={i} onChange={(e) => handleChange(e)}/>
-                                                                            <p>{i}</p>
-                                                                        </div>
-                                                                    )
-                                                                })}
-                                                            </div>
-                                                        )
-                                                        })
-                                                    }
-                                                </div>
+                                                )}
+                                                <select
+                                                    className="bg-[#eaeeeb] p-[10px] rounded-md"
+                                                    name="sponsor"
+                                                    value={regDetails["sponsor"] || ""}
+                                                    onChange={handleChange}
+                                                >
+                                                <option value="">Select a sponsor</option>
+                                                <option value="Non-Sponsored">Non-Sponsored</option>
+                                                
+                                                {sponsorList.map((i, index) => (
+                                                    <option key={"sponsor-name" + index} value={i.sponsor_name}>{i.sponsor_name}</option>
+                                                ))}
+                                                </select>
                                             </div>
-                                        }
+                                        )}
                                     </div>
                                 </div>
                             </div>
