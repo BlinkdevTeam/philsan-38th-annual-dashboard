@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useRef} from "react";
 import { createDeletedItem } from "../../supabase/supabaseService";
 
 const SliderModal = (props) => {
@@ -34,6 +34,9 @@ const SliderModal = (props) => {
     const [userDetails, setUserDetails] = useState({});
     const [isCancelRemarksOpen, setIsCancelremarksOpen] = useState(false);
     const [isDeleteRamarksOpen, setIsDeleteRemarksOpen] = useState(false);
+    
+    const cancelRef = useRef(null);
+    const deleteRef = useRef(null);
 
     useEffect(() => {
         const col = props.selectedCol || {};
@@ -49,6 +52,32 @@ const SliderModal = (props) => {
             fileNames: fieldLabels
         });
     }, [props.selectedCol])
+
+    //handling outside click to close popup
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+        if (
+            isCancelRemarksOpen &&
+            cancelRef.current &&
+            !cancelRef.current.contains(event.target)
+        ) {
+            setIsCancelremarksOpen(false);
+        }
+
+        if (
+            isDeleteRamarksOpen &&
+            deleteRef.current &&
+            !deleteRef.current.contains(event.target)
+        ) {
+            setIsDeleteRemarksOpen(false);
+        }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [isCancelRemarksOpen, isDeleteRamarksOpen]);
 
     const reg_status = props.selectedCol ? props.selectedCol.reg_status : null;
 
@@ -192,6 +221,7 @@ const SliderModal = (props) => {
     };
 
     const handlePopup = (trigger) => {
+        console.log("trigger", trigger)
         if(trigger === "cancel") {
             setIsCancelremarksOpen(!isCancelRemarksOpen)
             setIsDeleteRemarksOpen(false)
@@ -235,12 +265,12 @@ const SliderModal = (props) => {
 
                                             if(key === "remarks") {
                                                 return (
-                                                    <div key={key} className="absolute min-w-[250px] z-[1] top-[40px] flex flex-col gap-[0px] w-max bg-[#ffffff] p-[10px] rounded-3xl rounded-tl-[0px]">
+                                                    <div ref={cancelRef} key={key} className="absolute min-w-[250px] z-[1] top-[40px] flex flex-col gap-[0px] w-max bg-[#ffffff] p-[10px] rounded-3xl rounded-tl-[0px]">
                                                         <p className="text-[#67706a] text-[12px] w-max">{userDetails?.fileNames?.[key]}:</p>
                                                         <textarea 
                                                             className={`font-[400] rounded-lg p-[10px] text-[#000000] text-[12px] ${userDetails["errors"][key] ? "border-[2px] border-[red]" : "border-[1px] border-[green]"}`} 
                                                             name={key} 
-                                                            value={userDetails[key]}
+                                                            value={userDetails[key] ?? ""}
                                                             onChange={(e) =>
                                                                 setUserDetails((prev) => ({
                                                                 ...prev,
@@ -266,12 +296,12 @@ const SliderModal = (props) => {
 
                                             if(key === "remarks") {
                                                 return (
-                                                    <div key={key} className="absolute min-w-[250px] z-[1] top-[40px] right-[0px] flex flex-col gap-[0px] w-max bg-[#ffffff] p-[10px] rounded-3xl rounded-tr-[0px]">
+                                                    <div ref={deleteRef} key={key} className="absolute min-w-[250px] z-[1] top-[40px] right-[0px] flex flex-col gap-[0px] w-max bg-[#ffffff] p-[10px] rounded-3xl rounded-tr-[0px]">
                                                         <p className="text-[#67706a] text-[12px] w-max">{userDetails?.fileNames?.[key]}:</p>
                                                         <textarea 
                                                             className={`font-[400] rounded-lg p-[10px] text-[#000000] text-[12px] ${userDetails["errors"][key] ? "border-[2px] border-[red]" : "border-[1px] border-[green]"}`} 
                                                             name={key} 
-                                                            value={userDetails[key]}
+                                                            value={userDetails[key] ?? ""}
                                                             onChange={(e) =>
                                                                 setUserDetails((prev) => ({
                                                                 ...prev,

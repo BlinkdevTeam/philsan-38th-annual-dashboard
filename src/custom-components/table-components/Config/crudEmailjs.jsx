@@ -20,7 +20,7 @@ export const onApprove = (props) => {
 
         console.log("fullname", fullname)
         emailjs.send(
-            'service_1qkyi2i', //your_service_id
+            'service_02hek52', //your_service_id
             'template_f6qckle', //your_template_id
             {email: col.email, participant_name: fullname},
             'sOTpCYbD5KllwgbCD' //your_public_key
@@ -65,7 +65,7 @@ export const onReject = (props) => {
     })
     .then(() => {
         emailjs.send(
-            'service_1qkyi2i', //your_service_id
+            'service_02hek52', //your_service_id
             'template_ud9rl9a', //your_template_id
             {email: props.selectedCol.email},
             'sOTpCYbD5KllwgbCD' //your_public_key
@@ -86,7 +86,7 @@ export const onDelete = (props) => {
 
 export const inviteEmail = (props) => {
      emailjs.send(
-        'service_1qkyi2i', //your_service_id
+        'service_02hek52', //your_service_id
         'template_qiflphb', //your_template_id
         {email: props.email},
         'sOTpCYbD5KllwgbCD' //your_public_key
