@@ -67,7 +67,10 @@ export const onReject = (props) => {
         emailjs.send(
             'service_02hek52', //your_service_id
             'template_ud9rl9a', //your_template_id
-            {email: props.selectedCol.email},
+            {
+                email: props.selectedCol.email,
+                participant_name: `${props.selectedCol.first_name} ${props.selectedCol.last_name}`
+            },
             'sOTpCYbD5KllwgbCD' //your_public_key
         )
         .then((result) => {
