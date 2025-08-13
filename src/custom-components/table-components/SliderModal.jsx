@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from "react";
-import { createDeletedItem } from "../../supabase/supabaseService";
+import { createDeletedItem, getSponsorList } from "../../supabase/supabaseService";
 
 const SliderModal = (props) => {
     const [zoom, setZoom] = useState(false);
@@ -34,9 +34,14 @@ const SliderModal = (props) => {
     const [userDetails, setUserDetails] = useState({});
     const [isCancelRemarksOpen, setIsCancelremarksOpen] = useState(false);
     const [isDeleteRamarksOpen, setIsDeleteRemarksOpen] = useState(false);
+    const [sponsorList, setSponsorList] = useState([])
     
     const cancelRef = useRef(null);
     const deleteRef = useRef(null);
+
+    useEffect(() => {
+        getSponsorList().then(setSponsorList);
+    }, [])
 
     useEffect(() => {
         const col = props.selectedCol || {};
@@ -163,6 +168,8 @@ const SliderModal = (props) => {
             props.onApprove(userDetails)
             setIsCancelremarksOpen(false)
             setIsDeleteRemarksOpen(false)
+
+            console.log("userDetails sent", userDetails)
         }
     };
 
@@ -233,6 +240,7 @@ const SliderModal = (props) => {
         }
     }
 
+    console.log("userDetailssssss", userDetails)
 
     return (
         <>
@@ -345,25 +353,51 @@ const SliderModal = (props) => {
                                 <div className="flex flex-col gap-[10px] text-[18px]">
                                     {userDetails.email &&
                                         fieldKeys.map((key) => {
-                                            const condition = key === "email" || key === "sponsor" || key === "reg_request" || key === "remarks";
-                          
-                                            return (
-                                                <div key={key} className="flex flex-col gap-[2px]">
-                                                    <p className="text-[#67706a] text-[12px]">{userDetails?.fileNames?.[key]}:</p>
-                                                    <input 
-                                                        className={`font-[400] rounded-lg p-[10px] ${userDetails["errors"][key] && "border-[2px] border-[red]"} ${condition ? "bg-[#ede9dc] text-[#93896c]" : "bg-[#acc5b4] text-[#000000]"} text-[14px]`} 
-                                                        name={key} 
-                                                        value={userDetails[key]}
-                                                        onChange={(e) =>
-                                                            setUserDetails((prev) => ({
-                                                            ...prev,
-                                                            [key]: e.target.value,
-                                                            }))
-                                                        }
-                                                    readOnly={condition}
-                                                    />
-                                                </div>
-                                            )
+                                            const condition = key === "email" || key === "reg_request" || key === "remarks";
+                                            
+                                            if(key === "sponsor") {
+                                                return (
+                                                    <div key={key} className="flex flex-col gap-[2px]">
+                                                        <p className="text-[#67706a] text-[12px]">{userDetails?.fileNames?.[key]}:</p>
+                                                       <select
+                                                            className="bg-[#eaeeeb] p-[10px] rounded-md"
+                                                            name="sponsor"
+                                                            value={userDetails[key]}
+                                                            onChange={(e) =>
+                                                                setUserDetails((prev) => ({
+                                                                ...prev,
+                                                                [key]: e.target.value,
+                                                                }))
+                                                            }
+                                                        >
+                                                            <option value="">Select a sponsor</option>
+                                                            <option value="Non-Sponsored">Non-Sponsored</option>
+                                                            
+                                                            {sponsorList.map((i, index) => (
+                                                                <option key={"sponsor-name" + index} value={i.sponsor_name}>{i.sponsor_name}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                )
+                                            } else {
+                                                return (
+                                                    <div key={key} className="flex flex-col gap-[2px]">
+                                                        <p className="text-[#67706a] text-[12px]">{userDetails?.fileNames?.[key]}:</p>
+                                                        <input 
+                                                            className={`font-[400] rounded-lg p-[10px] ${userDetails["errors"][key] && "border-[2px] border-[red]"} ${condition ? "bg-[#ede9dc] text-[#93896c]" : "bg-[#acc5b4] text-[#000000]"} text-[14px]`} 
+                                                            name={key} 
+                                                            value={userDetails[key]}
+                                                            onChange={(e) =>
+                                                                setUserDetails((prev) => ({
+                                                                ...prev,
+                                                                [key]: e.target.value,
+                                                                }))
+                                                            }
+                                                        readOnly={condition}
+                                                        />
+                                                    </div>
+                                                )
+                                            }
                                     })}
                                 </div>
                             </div>

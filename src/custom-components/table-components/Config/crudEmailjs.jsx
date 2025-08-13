@@ -13,6 +13,7 @@ export const onApprove = (props) => {
         company: data.company,
         agri_license: data.agri_license,
         remarks: null,
+        sponsor: data.sponsor,
         reg_status: "approved"
     })
     .then((res) => {
@@ -61,7 +62,8 @@ export const onReject = (props) => {
     console.log("props", props)
     updateItem(props.selectedCol.email, {
         reg_status: "canceled",
-        remarks: props.data.remarks
+        remarks: props.data.remarks,
+        sponsor: props.data.sponsor
     })
     .then(() => {
         emailjs.send(
