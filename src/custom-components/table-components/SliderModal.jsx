@@ -168,8 +168,6 @@ const SliderModal = (props) => {
             props.onApprove(userDetails)
             setIsCancelremarksOpen(false)
             setIsDeleteRemarksOpen(false)
-
-            console.log("userDetails sent", userDetails)
         }
     };
 
@@ -360,7 +358,7 @@ const SliderModal = (props) => {
                                                     <div key={key} className="flex flex-col gap-[2px]">
                                                         <p className="text-[#67706a] text-[12px]">{userDetails?.fileNames?.[key]}:</p>
                                                        <select
-                                                            className="bg-[#eaeeeb] p-[10px] rounded-md"
+                                                            className={`font-[400] rounded-lg p-[10px] ${userDetails["errors"][key] && "border-[2px] border-[red]"} ${condition ? "bg-[#ede9dc] text-[#93896c]" : "bg-[#acc5b4] text-[#000000]"} text-[14px]`}
                                                             name="sponsor"
                                                             value={userDetails[key]}
                                                             onChange={(e) =>
