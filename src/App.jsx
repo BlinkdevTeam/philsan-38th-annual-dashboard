@@ -4,6 +4,8 @@ import viteLogo from '/vite.svg'
 import LandingPage from './custom-components/LandingPage'
 import Login from './custom-components/table-components/LogIn'
 import QrCode from './custom-components/table-components/QrCode'
+import SurveyLogin from './custom-components/table-components/SurveyLogin'
+import Survey from './custom-components/table-components/Survey'
 import Sponsors from './Config/Sponsors'
 import { Routes, Route, useParams } from 'react-router-dom'
 import { getSponsorByPassword } from './supabase/supabaseService'
@@ -13,7 +15,7 @@ function PasswordRoute() {
   const { password } = useParams()
   const [sponsor, setSponsor] = useState(null)
   const [error, setError] = useState(false)
-
+  
   useEffect(() => {
     const fetchSponsor = async () => {
       const res = await getSponsorByPassword(password)
@@ -45,10 +47,12 @@ function App() {
   
   return (
     <Routes>
-      <Route path="/:password" element={<PasswordRoute  />} />
+      <Route path="/sponsor/:password" element={<PasswordRoute  />} />
       <Route path="/login" element={<Login/>} />
       <Route path="/" element={<Login/>} />
       <Route path="/download-qr" element={<QrCode/>} />
+      <Route path="/quiz-survey-login" element={<SurveyLogin/>} />
+      <Route path="/quiz-survey/:email" element={<Survey/>} />
        {/* Catch-all route for 404 */}
       {/* <Route path="*" element={<NotFound />} /> */}
     </Routes>

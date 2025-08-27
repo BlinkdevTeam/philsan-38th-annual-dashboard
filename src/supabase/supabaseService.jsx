@@ -62,6 +62,37 @@ export const createSponsor = async (data) => {
 };
 
 
+export const createSurveyResponse = async (data) => {
+  const results = []; // collect all inserts
+
+  for (const item of data) {
+    const toSubmitData = {
+      participant: item.participant,
+      question_id: item.id,
+      question: item.question,
+      question_type: item.question_type,
+      choices: item.choices,
+      response: item.response,
+      order: item.order,
+    };
+
+    console.log("toSubmitData", toSubmitData);
+
+    const { data: result, error } = await supabase
+      .from("philsan_survey_responses")
+      .insert([toSubmitData])
+      .select("*")
+      .order('order', { ascending: true });
+
+    if (error) throw error;
+
+    results.push(result[0]); // store inserted row
+  }
+
+  return results; // ✅ return all rows
+};
+
+
 // Read
 export const getItems = async () => {
     const { data, error } = await supabase.from('philsan_registration_2025').select('*').order('created_at', { ascending: false });
@@ -131,6 +162,27 @@ export const getSponsorByPassword = async (password) => {
     return data;
 };
 
+export const getSurvey = async () => {
+    const { data, error } = await supabase
+        .from('philsan_survey')
+        .select('*')
+        .order('order', { ascending: true });
+
+    if (error) throw error;
+    return data;
+};
+
+export const getSurveyResponse = async (email) => {
+    const { data, error } = await supabase
+        .from("philsan_survey_responses")
+        .select('*')
+        .eq('participant', email)
+        .order('order', { ascending: true });
+
+    if (error) throw error;
+    return data;
+};
+
 export const storageUpload = async (filePath, file) => {
   const { data, error } = await supabase
     .storage
@@ -151,6 +203,40 @@ export const updateItem = async (email, data) => {
     if (error) throw error
     return result
 }
+
+export const updateSurveyResponse = async (data) => {
+  const results = [];
+
+  for (const item of data) {
+    console.log("item", item)
+    const toSubmitData = {
+      participant: item.participant,
+      question_id: item.id,
+      question: item.question,
+      question_type: item.question_type,
+      choices: item.choices,
+      response: item.response,
+      order: item.order,
+    };
+
+    console.log("toSubmitData", toSubmitData);
+
+    const { data: result, error } = await supabase
+      .from("philsan_survey_responses")
+      .update(toSubmitData)
+      .eq("participant", item.participant) // 👈 column name should match your schema
+      .eq("question_id", item.id) // 👈 important to target the right question
+      .select("*")
+      .order('order', { ascending: true });
+
+    if (error) throw error;
+
+    results.push(result[0]);
+  }
+
+  return results;
+};
+
 
 // Delete
 export const deleteItem = async (id, email) => {

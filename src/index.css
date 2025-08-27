@@ -13,6 +13,24 @@ body {
   font-family: 'Fraunces', serif;
 }
 
+.error-color {
+  color: #ff0000
+}
+
+@keyframes slideX {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px); /* move 10px to the right */
+  }
+}
+
+.group:hover .animate-slide-x {
+  display: inline-block; /* required for transform to work */
+  animation: slideX .5s ease-in-out infinite;
+}
+
 @layer utilities {
   .scrollbar-thin {
     scrollbar-width: thin;              /* Firefox */
