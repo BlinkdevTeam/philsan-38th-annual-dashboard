@@ -52,11 +52,30 @@ export const columnsBulk = (props) => {
         },{
             name: 'Upload Status',
             sortable: true,
-		    reorder: true,
-            selector: (row => {
-                return <span className={`${row.upload_failed && "text-[red]"} ${row.upload_failed && "text-[green]"}`}>{row.upload_failed ? row.upload_failed : row.upload_success}</span>
-            }),
-        },
+            reorder: true,
+            cell: (row) => {
+                const statusText = row.upload_failed ? row.upload_failed : row.upload_success;
+                const colorClass = row.upload_failed ? "text-red-500" : "text-green-500";
+
+                return (
+                <div className="relative group max-w-[150px]">
+                    {/* Truncated text */}
+                    <span
+                    className={`${colorClass} block truncate cursor-pointer`}
+                    >
+                    {statusText}
+                    </span>
+
+                    {/* Custom tooltip */}
+                    <div className="absolute hidden group-hover:block bg-black text-white text-xs px-3 py-1 rounded-lg -top-10 left-0 whitespace-normal z-50 shadow-lg max-w-[300px]">
+                    {statusText}
+                    </div>
+                </div>
+                );
+            },
+        }
+
+
     ];
 
     return column;
