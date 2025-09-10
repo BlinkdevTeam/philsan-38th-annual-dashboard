@@ -55,33 +55,25 @@ export const onApprove = (props) => {
         sponsor: data.sponsor,
         reg_status: "approved",
     })
-    .then(({ data: updatedRows, error }) => {
-        if (error) {
-            console.error("Update failed:", error.message);
-            props.closeModal();
-            return;
-        }
+    .then((res) => {
+        const fullname = res[0].first_name + " " + res[0].last_name
 
-        if (!updatedRows || updatedRows.length === 0) {
-            console.error("No updated rows returned");
-            props.closeModal();
-            return;
-        }
-
-        const updatedUser = updatedRows[0];
-        const fullname = `${updatedUser.first_name ?? ""} ${updatedUser.last_name ?? ""}`.trim();
-
-        console.log("fullname:", fullname);
-
-        return emailjs.send(
-            "service_02hek52", // your_service_id
-            "template_f6qckle", // your_template_id
-            { 
-                email: col.email, 
-                participant_name: fullname || "Participant" 
-            },
-            "sOTpCYbD5KllwgbCD" // your_public_key
-        );
+        console.log("fullname", fullname)
+        emailjs.send(
+            'service_02hek52', //your_service_id
+            'template_f6qckle', //your_template_id
+            {email: col.email, participant_name: fullname},
+            'sOTpCYbD5KllwgbCD' //your_public_key
+        )
+        .then((result) => {
+            console.log("results", result)
+            // props.closeModal();
+        })
+        .catch((error) => {
+            console.log("trigger error")
+            console.log("Error", error)
+            // props.closeModal();
+        });
     })
     .then((result) => {
         if (result) {

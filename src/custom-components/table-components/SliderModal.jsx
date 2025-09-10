@@ -238,8 +238,6 @@ const SliderModal = (props) => {
         }
     }
 
-    console.log("userDetailssssss", userDetails)
-
     return (
         <>
             <div className={`overflow-y-scroll ${ props.selectedCol ? "w-[60%]" : "w-[0px]"} bg-[#dce4df] absolute top-[0px] right-[0px] transition-all duration-200 ease z-[2] scrollbar-none `}>
