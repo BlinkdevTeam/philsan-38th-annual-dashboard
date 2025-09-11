@@ -2,8 +2,8 @@ import emailjs from "@emailjs/browser";
 import { getItems, deleteWithCharaters, updateItem, deleteItem, createItem } from '../../../supabase/supabaseService';
 
 // export const onApprove = (props) => {
-//     const col= props.selectedCol
-//     const data = props.data
+//     const col = props.selectedCol;
+//     const data = props.data;
 
 //     updateItem(data.email, {
 //         first_name: data.first_name,
@@ -14,7 +14,7 @@ import { getItems, deleteWithCharaters, updateItem, deleteItem, createItem } fro
 //         agri_license: data.agri_license,
 //         remarks: null,
 //         sponsor: data.sponsor,
-//         reg_status: "approved"
+//         reg_status: "approved",
 //     })
 //     .then((res) => {
 //         const fullname = res[0].first_name + " " + res[0].last_name
@@ -28,17 +28,25 @@ import { getItems, deleteWithCharaters, updateItem, deleteItem, createItem } fro
 //         )
 //         .then((result) => {
 //             console.log("results", result)
-//             props.closeModal();
+//             // props.closeModal();
 //         })
 //         .catch((error) => {
 //             console.log("trigger error")
 //             console.log("Error", error)
-//             props.closeModal();
+//             // props.closeModal();
 //         });
+//     })
+//     .then((result) => {
+//         if (result) {
+//             console.log("Email sent:", result);
+//         }
+//         props.closeModal();
+//     })
+//     .catch((error) => {
+//         console.error("Unexpected error:", error);
+//         props.closeModal();
 //     });
-// }
-
-//This is to prevent double entry
+// };
 
 export const onApprove = (props) => {
     const col = props.selectedCol;
@@ -56,36 +64,27 @@ export const onApprove = (props) => {
         reg_status: "approved",
     })
     .then((res) => {
-        const fullname = res[0].first_name + " " + res[0].last_name
+        const fullname = res[0].first_name + " " + res[0].last_name;
 
-        console.log("fullname", fullname)
-        emailjs.send(
-            'service_02hek52', //your_service_id
-            'template_f6qckle', //your_template_id
-            {email: col.email, participant_name: fullname},
-            'sOTpCYbD5KllwgbCD' //your_public_key
-        )
-        .then((result) => {
-            console.log("results", result)
-            // props.closeModal();
-        })
-        .catch((error) => {
-            console.log("trigger error")
-            console.log("Error", error)
-            // props.closeModal();
-        });
+        console.log("fullname", fullname);
+
+        return emailjs.send(
+            'service_02hek52',
+            'template_f6qckle',
+            { email: col.email, participant_name: fullname },
+            'sOTpCYbD5KllwgbCD'
+        );
     })
     .then((result) => {
-        if (result) {
-            console.log("Email sent:", result);
-        }
-        props.closeModal();
+        console.log("Email sent:", result);
+        props.closeModal();   // ✅ only close once here
     })
     .catch((error) => {
         console.error("Unexpected error:", error);
         props.closeModal();
     });
 };
+
 
 
 export const onSave = (props) => {
