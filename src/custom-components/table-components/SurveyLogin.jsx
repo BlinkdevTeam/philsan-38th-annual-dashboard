@@ -23,7 +23,7 @@ const SurveyLogin = ({setSponsorIn}) => {
             <div className="max-w-[1200] mx-auto">
                 <div className="flex">
                     <div className=" w-[100%] flex justify-center items-center h-[100vh]">
-                        <div className="flex flex-col gap-[20px] mt-[-100px]">
+                        <div className="w-[50%=] flex flex-col gap-[20px] mt-[-100px]">
                             <div className="flex flex-col justify-start items-center pb-[10px]">
                                 <div className="w-[]">
                                     <img className="w-[90px]" src={PhilsanLogo} alt="" />

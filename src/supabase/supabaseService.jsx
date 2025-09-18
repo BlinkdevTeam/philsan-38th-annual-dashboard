@@ -183,6 +183,26 @@ export const getSurveyResponse = async (email) => {
     return data;
 };
 
+export const getSpeaker = async () => {
+    const { data, error } = await supabase
+        .from('philsan_speaker')
+        .select('*')
+        .order('order', { ascending: true });
+
+    if (error) throw error;
+    return data;
+};
+
+export const getQuiz = async () => {
+    const { data, error } = await supabase
+        .from('philsan_quiz')
+        .select('*')
+        .order('order', { ascending: true });
+
+    if (error) throw error;
+    return data;
+};
+
 export const storageUpload = async (filePath, file) => {
   const { data, error } = await supabase
     .storage
