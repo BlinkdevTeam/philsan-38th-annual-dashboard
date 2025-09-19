@@ -76,10 +76,38 @@ export const createSurveyResponse = async (data) => {
       order: item.order,
     };
 
-    console.log("toSubmitData", toSubmitData);
-
     const { data: result, error } = await supabase
       .from("philsan_survey_responses")
+      .insert([toSubmitData])
+      .select("*")
+      .order('order', { ascending: true });
+
+    if (error) throw error;
+
+    results.push(result[0]); // store inserted row
+  }
+
+  return results; // ✅ return all rows
+};
+
+
+export const createQuizResponse = async (data) => {
+  const results = []; // collect all inserts
+
+  for (const item of data) {
+    const toSubmitData = {
+      email: item.email,
+      question_id: item.id,
+      question: item.question,
+      choice: item.choice,
+      choice_index: item.choice_index,
+      correct_answer: item.correct_answer
+    };
+
+    console.log("tosubmit", toSubmitData)
+
+    const { data: result, error } = await supabase
+      .from("philsan_quiz_response")
       .insert([toSubmitData])
       .select("*")
       .order('order', { ascending: true });
@@ -185,9 +213,9 @@ export const getSurveyResponse = async (email) => {
 
 export const getSpeaker = async () => {
     const { data, error } = await supabase
-        .from('philsan_speaker')
+        .from('philsan_speaker_topic')
         .select('*')
-        .order('order', { ascending: true });
+        .order('id', { ascending: true });
 
     if (error) throw error;
     return data;
@@ -197,7 +225,18 @@ export const getQuiz = async () => {
     const { data, error } = await supabase
         .from('philsan_quiz')
         .select('*')
-        .order('order', { ascending: true });
+        .order('id', { ascending: true });
+
+    if (error) throw error;
+    return data;
+};
+
+export const getParticipantQuiz = async (email) => {
+  console.log("email 2", email)
+    const { data, error } = await supabase
+        .from("philsan_quiz_response")
+        .select('*')
+        .eq('email', email)
 
     if (error) throw error;
     return data;
@@ -257,6 +296,31 @@ export const updateSurveyResponse = async (data) => {
   return results;
 };
 
+export const updateSurveyCompleted = async (email) => {
+  const { data, error } = await supabase
+    .from('philsan_registration_2025')
+    .update({ survey_completed: true }) // only update this column
+    .eq('email', email)
+    .select(); // optional, remove if you don’t need the updated row
+
+  if (error) throw error;
+  return data;
+};
+
+export const updateQuizResult = async (email) => {
+  const quizResult = await getParticipantQuiz(email);
+
+  console.log("quizResutl", quizResult)
+
+  // const { data, error } = await supabase
+  //   .from('philsan_registration_2025')
+  //   .update({ survey_completed: true }) // only update this column
+  //   .eq('email', email)
+  //   .select(); // optional, remove if you don’t need the updated row
+
+  // if (error) throw error;
+  // return data;
+};
 
 // Delete
 export const deleteItem = async (id, email) => {
