@@ -48,7 +48,7 @@ const Survey = () => {
                             order: item.order,
                             error: null
                         }
-                }))
+                    }))
                 }
             } catch (err) {
                 console.error("Error fetching survey:", err)
