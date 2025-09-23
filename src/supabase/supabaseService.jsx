@@ -101,10 +101,9 @@ export const createQuizResponse = async (data) => {
       question: item.question,
       choice: item.choice,
       choice_index: item.choice_index,
-      correct_answer: item.correct_answer
+      correct_answer: item.correct_answer,
+      answer_result: item.correct_answer === item.choice_index ? 1 : 0
     };
-
-    console.log("tosubmit", toSubmitData)
 
     const { data: result, error } = await supabase
       .from("philsan_quiz_response")
@@ -267,7 +266,6 @@ export const updateSurveyResponse = async (data) => {
   const results = [];
 
   for (const item of data) {
-    console.log("item", item)
     const toSubmitData = {
       participant: item.participant,
       question_id: item.id,
@@ -277,8 +275,6 @@ export const updateSurveyResponse = async (data) => {
       response: item.response,
       order: item.order,
     };
-
-    console.log("toSubmitData", toSubmitData);
 
     const { data: result, error } = await supabase
       .from("philsan_survey_responses")
@@ -308,18 +304,16 @@ export const updateSurveyCompleted = async (email) => {
 };
 
 export const updateQuizResult = async (email) => {
-  const quizResult = await getParticipantQuiz(email);
+  const participant = await getParticipantQuiz(email);
 
-  console.log("quizResutl", quizResult)
+  
+  const quizResult = participant.reduce((sum, i) => sum + i.answer_result, 0);
 
-  // const { data, error } = await supabase
-  //   .from('philsan_registration_2025')
-  //   .update({ survey_completed: true }) // only update this column
-  //   .eq('email', email)
-  //   .select(); // optional, remove if you don’t need the updated row
+  const toSubmitData = {quiz_result: quizResult}
 
-  // if (error) throw error;
-  // return data;
+  const { data: result, error } = await supabase.from('philsan_registration_2025').update(toSubmitData).eq('email', email).select()
+  if (error) throw error
+  return result
 };
 
 // Delete

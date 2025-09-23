@@ -76,14 +76,16 @@ const Quiz = () => {
             const capital = index == 0 ? "A" : index == 1 ? "B" : index == 2 ? "C" : "D" 
 
             return prev.map((q) =>
-                q.id === question_id
-                    ? { 
-                        ...q,
-                        choice_index: capital,
-                        choice: value,
-                        error: false, 
-                    } 
-                    : q 
+                (
+                    q.id === question_id
+                        ? { 
+                            ...q,
+                            choice_index: capital,
+                            choice: value,
+                            error: false, 
+                        } 
+                        : q  
+                )   
             )
         });
     };
@@ -91,6 +93,7 @@ const Quiz = () => {
     const onSubmit = async () => {
         const unanswered = quiz.find(q => q.choice === null);
 
+        console.log("submitting quiz")
         if(unanswered) {
             quiz.map((item, index) => {
                 if(item.choice === null) {

@@ -2,7 +2,7 @@ import {useState, useEffect} from "react"
 import { useParams } from "react-router-dom"
 import PhilsanLogo from "../../assets/philsan_logo.png"
 import PhilsanTheme from "../../assets/philsan-38th-theme.png"
-import { getSurvey, createSurveyResponse, getSurveyResponse, updateSurveyResponse } from "../../supabase/supabaseService"
+import { getSurvey, createSurveyResponse, getSurveyResponse, updateSurveyResponse, updateSurveyCompleted } from "../../supabase/supabaseService"
 
 const Survey = () => {
     const { email } = useParams()
@@ -73,27 +73,32 @@ const Survey = () => {
         );
     };
 
-    const onSubmit = () => {
-        const unanswered = survey.find(q => q.response === null);
+    const onSubmit = async () => {
+        // Check for unanswered questions
+        const hasUnanswered = survey.some(q => q.response === null);
 
-        if(unanswered) {
-            survey.map((item, index) => {
-                if(item.response === null) {
-                    setSurvey((prevSurvey) =>
-                            prevSurvey.map((q) =>
-                            q.id === item.id
-                                ? { ...q, response: null, error: "required" } // update this question
-                                : q // leave others unchanged
-                            )
-                        );
-                    }
-            })
-        } else if(retake) {
-            updateSurveyResponse(survey)
-        } else {
-            createSurveyResponse(survey)
+        if (hasUnanswered) {
+            // Update only unanswered questions with error in one go
+            setSurvey(prevSurvey =>
+            prevSurvey.map(q =>
+                q.response === null ? { ...q, error: "required" } : q
+            )
+            );
+            return; // stop here, don’t submit yet
         }
-    }
+
+        if (retake) {
+            updateSurveyResponse(survey);
+        } else {
+            try {
+                await createSurveyResponse(survey); // waits for inserts
+                await updateSurveyCompleted(email);      // runs after success
+            } catch (err) {
+                console.error("Submission failed:", err);
+            }
+        }
+    };
+
 
     console.log("surveydata", survey)
 
