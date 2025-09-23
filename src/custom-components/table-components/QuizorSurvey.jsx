@@ -48,7 +48,7 @@ const QuizorSurvey = () => {
                 <div className="max-w-[1200] mx-auto">
                     <div className="flex">
                         <div className=" w-[100%] flex flex-col justify-center items-center h-[100vh]">
-                            <div className="flex flex-col w-[70%] gap-[20px] mt-[-175px]">
+                            <div className="flex flex-col w-[70%] gap-[20px] mt-[-175px] items-center">
                                 <div className="flex flex-col justify-start items-center pb-[10px]">
                                     <img className="w-[90px]" src={PhilsanLogo} alt="" />
                                     <h6 className="text-[#1f783b] text-[26px] font-[1000] mt-[-5px]">38th CONVENTION</h6>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import DataTable from 'react-data-table-component';
 import { columns } from './columns';
+import { handleAddSponsor } from "./Config/handleAddSponsor";
 import { 
     getSponsorList,
     getParticipants,
@@ -108,39 +109,6 @@ const MainTable = ({sponsor}) => {
                 }
             ).subscribe();
 
-        // const updateByStatus = (data) => {
-        //     // First remove this data from all lists
-        //     setApproved((prev) => prev.filter((item) => item.id !== data.id));
-        //     setPendings((prev) => prev.filter((item) => item.id !== data.id));
-        //     setCanceled((prev) => prev.filter((item) => item.id !== data.id));
-        //     setInvited((prev) => prev.filter((item) => item.id !== data.id)); // optional if you have this
-
-        //     // Then add it to the correct list
-        //     const updateState = (setter) => {
-        //         setter((prev) => {
-        //             const exists = prev.find((item) => item.id === data.id);
-        //             return exists
-        //                 ? prev.map((item) => (item.id === data.id ? data : item))
-        //                 : [data, ...prev];
-        //         });
-        //     };
-
-        //     switch (data.reg_status) {
-        //         case "pending":
-        //             updateState(setPendings);
-        //             break;
-        //         case "invited":
-        //             updateState(setInvited);
-        //             break;
-        //         case "canceled":
-        //             updateState(setCanceled);
-        //             break;
-        //         case "approved":
-        //             updateState(setApproved);
-        //             break;
-        //     }
-        // };
-
         return () => {
             supabase.removeChannel(channel);
         };
@@ -196,27 +164,25 @@ const MainTable = ({sponsor}) => {
         setSearchParticipant(e.target.value)
     }
 
-    const handleAddSponsor = (e) => {
-        const generateRandomCode = () => {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    // const handleAddSponsor = (e) => {
+    //     const generateRandomCode = () => {
+    //         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
             
-            let result = '';
+    //         let result = '';
             
-            for (let i = 0; i < 6; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
+    //         for (let i = 0; i < 6; i++) {
+    //             result += chars.charAt(Math.floor(Math.random() * chars.length));
+    //         }
             
-            return result;
-        };
-        
-        console.log(e.target.value)
+    //         return result;
+    //     };
 
-        setToAddSponsor(prev => ({
-            ...prev,
-            sponsor_name: e.target.value,
-            password: e.target.value ? generateRandomCode()  + "-" + e.target.value : null,
-        }));
-    }
+    //     setToAddSponsor(prev => ({
+    //         ...prev,
+    //         sponsor_name: e.target.value,
+    //         password: e.target.value ? generateRandomCode()  + "-" + e.target.value : null,
+    //     }));
+    // }
 
     const submitAddSponsor = () => {
         const {errors, ...sponsors} = toAddSponsor;
@@ -323,7 +289,7 @@ const MainTable = ({sponsor}) => {
                                                 name="sponsor_name"
                                                 type="text" 
                                                 placeholder="Enter Sponsor Name" 
-                                                onChange={handleAddSponsor}
+                                                onChange={handleAddSponsor(setToAddSponsor)}
                                                 value={toAddSponsor.sponsor_name} 
                                             />
                                         </div>
@@ -334,7 +300,7 @@ const MainTable = ({sponsor}) => {
                                                 name="password"
                                                 type="text" 
                                                 placeholder="Enter Password" 
-                                                onChange={handleAddSponsor}
+                                                onChange={handleAddSponsor(setToAddSponsor)}
                                                 value={toAddSponsor.password} 
                                                 readOnly
                                             />

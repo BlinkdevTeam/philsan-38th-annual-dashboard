@@ -131,11 +131,9 @@ const Quiz = () => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     };
 
-    console.log("quiz", quiz)
-
     return (
         <div className="max-w-[1280px] my-[20px] mx-auto relative">
-            <div className="relative pt-[50px] px-[100px] pb-[200px] shadow-xl overflow-hidden rounded-2xl bg-[linear-gradient(to_bottom,#ffffff_0%,#ffffff_60%,#CBF9B6_100%)]">
+            <div className="relative  pt-[50px] px-[20px] md:px-[100px] pb-[200px] shadow-xl overflow-hidden rounded-2xl bg-[linear-gradient(to_bottom,#ffffff_0%,#ffffff_60%,#CBF9B6_100%)]">
                 <div className="flex flex-col md:flex-row justify-between items-center">
                     <div className="w-[200px]">
                         <img src={PhilsanLogo} alt="" />
