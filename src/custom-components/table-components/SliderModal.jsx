@@ -240,23 +240,37 @@ const SliderModal = (props) => {
 
     return (
         <>
-            <div className={`overflow-y-scroll ${ props.selectedCol ? "w-[60%]" : "w-[0px]"} bg-[#dce4df] absolute top-[0px] right-[0px] transition-all duration-200 ease z-[2] scrollbar-none `}>
+            <div className={`overflow-y-scroll ${ props.selectedCol ? "w-[60%]" : "w-[0px]"} bg-[#dce4df] absolute top-[0px] right-[0px] transition-all duration-200 ease z-[99] scrollbar-none `}>
                 <div className="h-[100vh]">
                     <div className="py-[40px] px-[50px]">
-                        <div className="flex justify-between items-center mb-[50px]">
+                        <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center mb-[50px]">
                             <div className="cursor-pointer flex gap-[20px] items-center" onClick={props.closeModal}>
                                 <svg width="16" height="14" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M14.9998 7H1.99985M6.99985 1L1.70696 6.29289C1.31643 6.68342 1.31643 7.31658 1.70696 7.70711L6.99985 13" stroke="#111111" strokeWidth="2" strokeLinecap="round"/>
                                 </svg>
-                                <h6 className="text-[#67706a] text-[24px]">Participant Details</h6>
+                                <h6 className="text-[#67706a] text-[18px]">Participant Details</h6>
                             </div>
                             <div className="flex gap-[20px]">
-                                <div onClick={handleApprove} className="flex gap-[10px] items-center px-[20px] py-[10px] rounded-[8px] bg-[#acc5b4] hover:bg-[#1f783b] cursor-pointer transition-background-color duration-300 ease-in-out">
-                                    <svg width="18" height="13" viewBox="0 0 18 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M17 1L6.70711 11.2929C6.31658 11.6834 5.68342 11.6834 5.29289 11.2929L1 7" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"/>
-                                    </svg>
-                                    <p className="text-[#f9f9f9]">Accept</p>
+                                {/* timein and accept */}
+                                <div className="flex gap-[20px] w-fit">
+                                    <div className="flex gap-[10px] items-center px-[20px] py-[10px] rounded-[8px] bg-[#acc5b4] hover:bg-[#1f783b] cursor-pointer transition-background-color duration-300 ease-in-out w-fit">
+                                        <svg width="25" height="25" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <g id="Layer_15" data-name="Layer 15" fill="#ffffff">
+                                                <path d="m12 20a8 8 0 1 1 8-8 1 1 0 0 0 2 0 10 10 0 1 0 -10 10 1 1 0 0 0 0-2z"/>
+                                                <path d="m12 6a1 1 0 0 0 -1 1v4.59l-2.71 2.7a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3-3a1 1 0 0 0 .29-.71v-5a1 1 0 0 0 -1-1z"/>
+                                                <path d="m21 16h-3.59l.3-.29a1 1 0 0 0 -1.42-1.42l-2 2a1 1 0 0 0 -.21.33 1 1 0 0 0 0 .76 1 1 0 0 0 .21.33l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29h3.59a1 1 0 0 0 0-2z"/>
+                                            </g>
+                                        </svg>
+                                        <p className="text-[#f9f9f9]">Time-in</p>
+                                    </div>
+                                    <div onClick={handleApprove} className="flex gap-[10px] items-center px-[20px] py-[10px] rounded-[8px] bg-[#acc5b4] hover:bg-[#1f783b] cursor-pointer transition-background-color duration-300 ease-in-out">
+                                        <svg width="18" height="13" viewBox="0 0 18 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M17 1L6.70711 11.2929C6.31658 11.6834 5.68342 11.6834 5.29289 11.2929L1 7" stroke="#ffffff" strokeWidth="2" strokeLinecap="round"/>
+                                        </svg>
+                                        <p className="text-[#f9f9f9]">Accept</p>
+                                    </div>
                                 </div>
+                                {/* delete and cancel */}
                                 <div className="relative">
                                     <div onClick={() => handlePopup("cancel")} className={`flex gap-[10px] items-center px-[20px] py-[10px] rounded-[8px] ${isCancelRemarksOpen ? "bg-[#797979]" : "bg-[#acc5b4] hover:bg-[#424242]"} cursor-pointer transition-background-color duration-300 ease-in-out`}>
                                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -422,7 +436,7 @@ const SliderModal = (props) => {
             <div
                 onClick={props.closeModal}
                 className={`
-                    fixed inset-0 bg-black z-[1] transition-opacity duration-300 ease-in-out
+                    fixed inset-0 bg-black z-[98] transition-opacity duration-300 ease-in-out
                     ${props.selectedCol ? 'opacity-50 pointer-events-auto' : 'opacity-0 pointer-events-none'}
                 `}
                 >
