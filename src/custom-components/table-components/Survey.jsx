@@ -1,5 +1,5 @@
 import {useState, useEffect} from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import PhilsanLogo from "../../assets/philsan_logo.png"
 import PhilsanTheme from "../../assets/philsan-38th-theme.png"
 import { getSurvey, createSurveyResponse, getSurveyResponse, updateSurveyResponse, updateSurveyCompleted } from "../../supabase/supabaseService"
@@ -8,6 +8,10 @@ const Survey = () => {
     const { email } = useParams()
     const [survey, setSurvey] = useState([])
     const [retake, setRetake] = useState(false)
+    const [spinner, setSpinner] = useState(false)
+    const [buttonTitle, setButtontitle] = useState("Submit Survey")
+    const [error, setError] = useState(false)
+    const navigate = useNavigate()
     // const [response, setResponse] = useState({})
 
    
@@ -74,10 +78,12 @@ const Survey = () => {
     };
 
     const onSubmit = async () => {
+        setSpinner(true)
         // Check for unanswered questions
         const hasUnanswered = survey.some(q => q.response === null);
 
         if (hasUnanswered) {
+            setError(true)
             // Update only unanswered questions with error in one go
             setSurvey(prevSurvey =>
             prevSurvey.map(q =>
@@ -92,15 +98,24 @@ const Survey = () => {
         } else {
             try {
                 await createSurveyResponse(survey); // waits for inserts
-                await updateSurveyCompleted(email);      // runs after success
+                await updateSurveyCompleted(email);  // runs after success
+               
             } catch (err) {
                 console.error("Submission failed:", err);
+            }  finally {
+                setError(false)
+                setButtontitle("Survey Completed")
+                setSpinner(false); // always runs, success or fail
+                onNavigate();
             }
         }
     };
 
-
-    console.log("surveydata", survey)
+    const onNavigate = () => {
+        if (email) {
+            navigate("/quiz-survey/"+email) 
+        }
+    }
 
     return (
         <div className="max-w-[1280px] my-[20px] mx-auto">
@@ -164,8 +179,22 @@ const Survey = () => {
                     </div>
                 </div>
                 <div className="relative z-[1] flex flex-col items-center justify-center pt-[100px]">
-                    <button onClick={() => onSubmit()} className="w-fit px-[80px] py-[10px] bg-[#1f783b] rounded-md text-[#ffffff] cursor-pointer">Submit Survey</button>
-                    <button onClick={() => onSubmit()} className="group flex gap-[20px] items-center w-fit pl-[35px] pr-[80px] py-[10px] font-[600] text-[#1f783b] cursor-pointer"><span className="text-[25px] animate-slide-x">{'\u{1F449}'}</span><span>Proceed to quiz</span></button>
+                    {error &&
+                        <span className="text-[red]">Please answer all questions</span>
+                    }
+                    {spinner ? 
+                        <svg className="animate-spin h-10 w-10 text-[#1f783b]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg> : 
+                        <button onClick={() => onSubmit()} className="w-fit px-[80px] py-[10px] bg-[#1f783b] rounded-md text-[#ffffff] cursor-pointer">{buttonTitle}</button>
+                    }
+                    <button onClick={() => onNavigate()} className="group flex gap-[20px] items-center w-fit pl-[35px] pr-[80px] py-[10px] font-[600] text-[#1f783b] cursor-pointer">
+                        <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7 1L1 7L7 13" stroke="#1F773A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Back
+                    </button>
                 </div>
                 <img className="absolute bottom-[-50px] left-[0px] opacity-[.05]" src={PhilsanTheme} alt="" />
             </div>

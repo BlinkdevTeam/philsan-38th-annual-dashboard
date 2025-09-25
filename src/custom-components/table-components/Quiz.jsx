@@ -9,6 +9,9 @@ const Quiz = () => {
     const [session, setSession] = useState([])
     const [quiz, setQuiz] = useState([])
     const { email } = useParams()
+    const [spinner, setSpinner] = useState(false)
+    const [buttonTitle, setButtontitle] = useState("Submit Quiz")
+    const [error, setError] = useState(false)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -94,7 +97,10 @@ const Quiz = () => {
         const unanswered = quiz.find(q => q.choice === null);
 
         console.log("submitting quiz")
+
         if(unanswered) {
+            setError(true)
+
             quiz.map((item, index) => {
                 if(item.choice === null) {
                     setQuiz((prev) =>
@@ -107,6 +113,8 @@ const Quiz = () => {
                     }
             })
         } else {
+            setError(false)
+
             try {
                 // waits for all inserts to finish
                 await createQuizResponse(quiz);
@@ -115,6 +123,10 @@ const Quiz = () => {
                 await updateQuizResult(email);
             } catch (err) {
                 console.error("Submission failed:", err);
+            } finally {
+                setButtontitle("Quiz Completed")
+                setSpinner(false); // always runs, success or fail
+                onNavigate();
             }
         }
     }
@@ -202,7 +214,16 @@ const Quiz = () => {
                     </div>
                 </div>
                 <div className="relative z-[1] flex flex-col items-center justify-center pt-[100px]">
-                    <button onClick={() => onSubmit()} className="w-fit px-[80px] py-[10px] bg-[#1f783b] rounded-md text-[#ffffff] cursor-pointer">Submit Quiz</button>
+                    {error &&
+                        <span className="text-[red]">Please answer all questions</span>
+                    }
+                    {spinner ? 
+                        <svg className="animate-spin h-10 w-10 text-[#1f783b]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg> : 
+                        <button onClick={() => onSubmit()} className="w-fit px-[80px] py-[10px] bg-[#1f783b] rounded-md text-[#ffffff] cursor-pointer">{buttonTitle}</button>
+                    }
                     <button onClick={() => onNavigate()} className="group flex gap-[20px] items-center w-fit pl-[35px] pr-[80px] py-[10px] font-[600] text-[#1f783b] cursor-pointer">
                         <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M7 1L1 7L7 13" stroke="#1F773A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

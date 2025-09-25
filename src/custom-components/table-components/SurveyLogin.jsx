@@ -7,9 +7,9 @@ import { getSponsorByPassword, getParticipant } from "../../supabase/supabaseSer
 
 const SurveyLogin = ({setSponsorIn}) => {
     const [email, setEmail] = useState(null)
-
+    
     const navigate = useNavigate() // 👈 Initialize
-
+    
     const onSubmit = async () => {
         const emailExist = await getParticipant(email).then(res => res)
 
@@ -18,6 +18,7 @@ const SurveyLogin = ({setSponsorIn}) => {
         }
     }
     
+
     return (
         <div className="w-[100%]">
             <div className="max-w-[1200] mx-auto">

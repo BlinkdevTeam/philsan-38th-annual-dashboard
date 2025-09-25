@@ -3,15 +3,20 @@ import { useParams } from "react-router-dom"
 import PhilsanLogo from "../../assets/philsan_logo.png"
 import PhilsanTheme from "../../assets/philsan-38th-theme.png"
 import { Link, useNavigate } from 'react-router-dom';
+import { getParticipant } from "../../supabase/supabaseService";
 
-const TakeComponent = ({name, onSubmit}) => {
+const TakeComponent = ({name, onSubmit, isCompleted}) => {
+    console.log(isCompleted)
+
     return (
         <div className="flex flex-col gap-[10px]">
-            <button onClick={onSubmit} className="cursor-pointer flex justify-between items-center w-[100%] bg-[#ffffff] shadow-sm border-l-[10px] border-[#3eac51] hover:border-[#F9B700] hover:border-l-[20px] py-[10px] text-[#1f783b] text-left px-[20px] rounded-lg transition-background-color duration-300 ease-in-out">
+            <button onClick={onSubmit} className={`cursor-pointer flex justify-between items-center w-[100%] ${isCompleted ? "bg-[#ffdc7a]" : "bg-[#ffffff]"} shadow-sm ${!isCompleted && "border-l-[10px]"} border-[#3eac51] hover:border-[#F9B700] ${!isCompleted && "hover:border-l-[20px]"} py-[10px] ${isCompleted ? "text-[#ffffff]" : "text-[#1f783b]"} text-left px-[20px] rounded-lg transition-background-color duration-300 ease-in-out`}>
                 {name} 
-                <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 13L7 7L1 1" stroke="#3eac51" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                {isCompleted ? <div>Completed</div> :
+                    <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 13L7 7L1 1" stroke="#3eac51" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                }
             </button>
         </div>
     )
@@ -33,15 +38,42 @@ const DownloadComponent = ({name, onSubmit}) => {
 const QuizorSurvey = () => {
     const navigate = useNavigate()
     const { email } = useParams()
+    const [participant, setParticipant] = useState([])
 
-    const onSubmit = ({path}) => {
-        console.log("email", path+email)
+    useEffect(() => {
+        const fetchParticipant = async () => {
+            try {
+            const participant = await getParticipant(email);
+            if (participant) {
+                setParticipant(participant[0]);
+            }
+            } catch (err) {
+            console.error("Failed to fetch participant", err);
+            }
+        };
 
-        if (email) {
-            navigate(path+email) 
+        fetchParticipant();
+    }, [email]);
+
+
+    const onSubmit = ({ path, action }) => {
+        console.log("email", path + email);
+
+        if (!email) return;
+
+        const conditions = {
+            sv: !participant.sv_program_downlaoded,
+            cert: !participant.certificate_downloaded,
+            survey: !participant.survey_completed,
+            quiz: !participant.quiz_result,
+        };
+
+        if (conditions[action]) {
+            navigate(path + email);
         }
-    }
+    };
 
+    console.log("participant", participant)
     return (
         <div className="">
             <div className="w-[100%]">
@@ -66,20 +98,22 @@ const QuizorSurvey = () => {
                                     <div className="flex flex-col gap-[10px] w-[50%] py-[30px] px-[40px]">
                                         <TakeComponent 
                                             name="Take Survey"
-                                            onSubmit={() => onSubmit({path: "/survey/"})}
+                                            onSubmit={() => onSubmit({path: "/survey/", action: "survey"})}
+                                            isCompleted={participant.survey_completed}
                                         />
                                         <TakeComponent 
                                             name="Take Quiz"
-                                            onSubmit={() => onSubmit({path: "/quiz/"})}
+                                            onSubmit={() => onSubmit({path: "/quiz/", action: "quiz"})}
+                                            isCompleted={participant.quiz_result}
                                         />
                                         <div className="flex flex-row gap-[20px] justify-between">
                                             <DownloadComponent
                                                 name="Certificate"
-                                                onSubmit={() => onSubmit()}
+                                                onSubmit={() => onSubmit({path: "/quiz/", action: "cert"})}
                                             />
                                             <DownloadComponent
                                                 name="SV Program"
-                                                onSubmit={() => onSubmit()}
+                                                onSubmit={() => onSubmit({path: "/quiz/", action: "sv"})}
                                             />
                                         </div>
                                     </div>

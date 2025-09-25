@@ -105,6 +105,8 @@ export const createQuizResponse = async (data) => {
       answer_result: item.correct_answer === item.choice_index ? 1 : 0
     };
 
+    console.log("toSubmit", toSubmitData)
+
     const { data: result, error } = await supabase
       .from("philsan_quiz_response")
       .insert([toSubmitData])
