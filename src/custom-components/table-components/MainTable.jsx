@@ -6,7 +6,9 @@ import {
     getSponsorList,
     getParticipants,
     createSponsor,
-    deleteSponsor } from '../../supabase/supabaseService';
+    deleteSponsor,
+    updateTimein
+} from '../../supabase/supabaseService';
 import { supabase } from "/supabaseClient";
 import { Toaster } from 'react-hot-toast';
 import Widget from "./Widget";
@@ -167,26 +169,22 @@ const MainTable = ({sponsor}) => {
     const handleSearchParticipant = (e) => {
         setSearchParticipant(e.target.value)
     }
+    
+    const handleTime = (e) => {
+        const messages = {
+            "time-in": "Time-IN Successful",
+            "time-out": "Time-OUT Successful",
+            "delete-timein": "Time-IN DELETED",
+            "delete-timeout": "Time-OUT DELETED",
+        };
 
-    // const handleAddSponsor = (e) => {
-    //     const generateRandomCode = () => {
-    //         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            
-    //         let result = '';
-            
-    //         for (let i = 0; i < 6; i++) {
-    //             result += chars.charAt(Math.floor(Math.random() * chars.length));
-    //         }
-            
-    //         return result;
-    //     };
+        updateTimein({ email: selectedCol.email, action: e.action }).then(() => {
+            toast.success(messages[e.action]);
+            setSelectedCol(null);
+            setProof(null);
+        });
+    };
 
-    //     setToAddSponsor(prev => ({
-    //         ...prev,
-    //         sponsor_name: e.target.value,
-    //         password: e.target.value ? generateRandomCode()  + "-" + e.target.value : null,
-    //     }));
-    // }
 
     const submitAddSponsor = () => {
         const {errors, ...sponsors} = toAddSponsor;
@@ -264,7 +262,7 @@ const MainTable = ({sponsor}) => {
                                     onChange={handleSearchParticipant}
                                 />
                             </div>
-                            <div className="flex items-center pb-[20px] justify-between">
+                            <div className="flex items-start pb-[20px] justify-between">
                                 <div className="flex flex-wrap md:flex-no-wrap items-center gap-[10px]">
                                     <Widget
                                         title={"Approved"}
@@ -292,15 +290,19 @@ const MainTable = ({sponsor}) => {
                                         <button  className="text-[12px] text-[#000000] cursor-pointer"><strong>Bulk</strong> Registration via CSV</button>
                                     </div>
                                     <button onClick={() => handleGotoReg("single")} className="cursor-pointer py-[8px] px-[10px] bg-[#ffe7a4] text-[14px] rounded-lg">Register New Participant</button>
+                                    <div className="bg-[#1f783b] py-[8px] px-[20px] text-[#dce4df] text-[11px] rounded-lg block lg:hidden">
+                                        <p className="font-[200]">Sponsor: <span className="font-[800]">{toFilterSponsor}</span></p>
+                                        <p className="font-[200]">Password: <span className="font-[800]">{sponsorPass}</span></p>
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-[10px] hidden lg:block">
+                                <div className="items-center gap-[10px] hidden justify-end lg:flex">
                                     <DownloadCsv
                                         data={filteredData}
                                     />
                                     <div>
                                         {
                                             toFilterSponsor !== "Philsan Secretariat" && toFilterSponsor !== "Non-Sponsored" &&
-                                            <div className="bg-[#1f783b] py-[8px] px-[20px] text-[#dce4df] text-[11px] rounded-lg">
+                                            <div className="bg-[#1f783b] py-[8px] px-[20px] text-[#dce4df] text-[11px] rounded-lg w-[200px]">
                                                 <p className="font-[200]">Sponsor: <span className="font-[800]">{toFilterSponsor}</span></p>
                                                 <p className="font-[200]">Password: <span className="font-[800]">{sponsorPass}</span></p>
                                             </div>
@@ -347,6 +349,7 @@ const MainTable = ({sponsor}) => {
                             closeModal: () => closeModal("delete", data)
                         }
                     )}
+                    handleTime={(e) => handleTime(e)}
                 />
             </div>
         </div>

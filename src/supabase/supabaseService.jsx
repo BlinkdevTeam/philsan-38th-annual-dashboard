@@ -262,6 +262,34 @@ export const updateItem = async (email, data) => {
     return result
 }
 
+export const updateTimein = async ({email, action}) => {
+  console.log(action)
+
+  const now = new Date();
+  const pad = (n) => String(n).padStart(2, "0");
+  const formatDateTime = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+  const actions = {
+    "time-in": { formatted_time_in: formatDateTime, time_in: now.toISOString() },
+    "time-out": { formatted_time_out: formatDateTime, time_out: now.toISOString() },
+    "delete-timein": { formatted_time_in: null, time_in: null },
+    "delete-timeout": { formatted_time_out: null, time_out: null },
+  };
+
+  const toSubmit = actions[action];
+  if (!toSubmit) throw new Error("Invalid action");
+
+  const { data: result, error } = await supabase
+    .from("philsan_registration_2025")
+    .update(toSubmit)
+    .eq("email", email)
+    .select();
+
+  if (error) throw error;
+  return result;
+};
+
+
 export const updateSurveyResponse = async (data) => {
   const results = [];
 

@@ -26,7 +26,7 @@ const DownloadCsv = (props) => {
 
 
     return (
-        <div className={`rounded-lg flex cursor-pointer py-[5px] px-[20px] gap-[10px] justify-center items-center h-max bg-[#acc5b4] hover:bg-[#ffe7a4]`}>
+        <div className={`rounded-lg flex cursor-pointer py-[5px] px-[20px] gap-[10px] justify-center items-center h-max bg-[#acc5b4] hover:bg-[#ffe7a4] w-[150px]`}>
             <button className="text-[12px] cursor-pointer" onClick={downloadCSV}>Download CSV</button>
         </div>
     )
