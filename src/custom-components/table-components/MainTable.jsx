@@ -286,10 +286,10 @@ const MainTable = ({sponsor}) => {
                                         userStatus={userStatus}
                                         setUserStatus={() => setContent("Canceled", toFilterSponsor, sponsorPass)}
                                     />
-                                    <div  onClick={() => handleGotoReg("bulk")} className="hidden md:block cursor-pointer py-[8px] px-[10px] bg-[#ffe7a4] text-[14px] rounded-lg">
+                                    {/* <div  onClick={() => handleGotoReg("bulk")} className="hidden md:block cursor-pointer py-[8px] px-[10px] bg-[#ffe7a4] text-[14px] rounded-lg">
                                         <button  className="text-[12px] text-[#000000] cursor-pointer"><strong>Bulk</strong> Registration via CSV</button>
                                     </div>
-                                    <button onClick={() => handleGotoReg("single")} className="cursor-pointer py-[8px] px-[10px] bg-[#ffe7a4] text-[14px] rounded-lg">Register New Participant</button>
+                                    <button onClick={() => handleGotoReg("single")} className="cursor-pointer py-[8px] px-[10px] bg-[#ffe7a4] text-[14px] rounded-lg">Register New Participant</button> */}
                                     <div className="bg-[#1f783b] py-[8px] px-[20px] text-[#dce4df] text-[11px] rounded-lg block lg:hidden">
                                         <p className="font-[200]">Sponsor: <span className="font-[800]">{toFilterSponsor}</span></p>
                                         <p className="font-[200]">Password: <span className="font-[800]">{sponsorPass}</span></p>
