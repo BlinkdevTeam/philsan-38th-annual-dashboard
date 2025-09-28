@@ -79,10 +79,11 @@ const Survey = () => {
 
     const onSubmit = async () => {
         setSpinner(true)
+
         // Check for unanswered questions
         const hasUnanswered = survey.some(q => q.response === null);
 
-        if (hasUnanswered) {
+        if (hasUnanswered) { 
             setError(true)
             // Update only unanswered questions with error in one go
             setSurvey(prevSurvey =>
@@ -94,8 +95,19 @@ const Survey = () => {
         }
 
         if (retake) {
-            updateSurveyResponse(survey);
+            try {
+                await updateSurveyResponse(survey);  // runs after success
+                await updateSurveyCompleted(email);
+            } catch (err) {
+                console.error("Submission failed:", err);
+            }  finally {
+                setError(false)
+                setButtontitle("Survey Completed")
+                setSpinner(false); 
+                onNavigate();
+            }
         } else {
+            console.log("submitting...")
             try {
                 await createSurveyResponse(survey); // waits for inserts
                 await updateSurveyCompleted(email);  // runs after success
@@ -105,7 +117,7 @@ const Survey = () => {
             }  finally {
                 setError(false)
                 setButtontitle("Survey Completed")
-                setSpinner(false); // always runs, success or fail
+                setSpinner(false); 
                 onNavigate();
             }
         }
@@ -191,7 +203,7 @@ const Survey = () => {
                     }
                     <button onClick={() => onNavigate()} className="group flex gap-[20px] items-center w-fit pl-[35px] pr-[80px] py-[10px] font-[600] text-[#1f783b] cursor-pointer">
                         <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 1L1 7L7 13" stroke="#1F773A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M7 1L1 7L7 13" stroke="#1F773A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
                         Back
                     </button>

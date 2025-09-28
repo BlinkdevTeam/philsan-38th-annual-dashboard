@@ -8,6 +8,7 @@ import SurveyLogin from './custom-components/table-components/SurveyLogin'
 import Survey from './custom-components/table-components/Survey'
 import Quiz from './custom-components/table-components/Quiz'
 import QuizorSurvey from './custom-components/table-components/QuizorSurvey'
+import CertificateViewer from './custom-components/table-components/CertificateViewer'
 import Sponsors from './Config/Sponsors'
 import { Routes, Route, useParams } from 'react-router-dom'
 import { getSponsorByPassword } from './supabase/supabaseService'
@@ -57,6 +58,7 @@ function App() {
       <Route path="/quiz-survey/:email" element={<QuizorSurvey/>} />
       <Route path="/survey/:email" element={<Survey/>} />
       <Route path="/quiz/:email" element={<Quiz/>} />
+      <Route path="/certificate/:email" element={<CertificateViewer/>} />
        {/* Catch-all route for 404 */}
       {/* <Route path="*" element={<NotFound />} /> */}
     </Routes>
