@@ -8,20 +8,46 @@ import Certificate from "./Certificate";
 import { pdf } from "@react-pdf/renderer";
 import { supabase } from "/supabaseClient";
 
-const TakeComponent = ({name, onSubmit, isCompleted}) => {
+const TakeComponent = ({name, onSubmit, isCompleted, action}) => {
     console.log(isCompleted)
+    const cutoff = new Date("2025-09-30T16:00:00"); // Sept 30, 2025 4:00 PM
+    const now = new Date();
 
     return (
-        <div className="flex flex-col gap-[10px]">
-            <button onClick={onSubmit} className={`cursor-pointer flex justify-between items-center w-[100%] ${isCompleted ? "bg-[#ffdc7a]" : "bg-[#ffffff]"} shadow-sm ${!isCompleted && "border-l-[10px]"} border-[#3eac51] hover:border-[#F9B700] ${!isCompleted && "hover:border-l-[20px]"} py-[10px] ${isCompleted ? "text-[#b18200]" : "text-[#1f783b]"} text-left px-[20px] rounded-lg transition-background-color duration-300 ease-in-out text-[14px] md:text-[16px]`}>
-                {name} 
-                {isCompleted ? <div>Completed</div> :
-                    <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M1 13L7 7L1 1" stroke="#3eac51" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                }
-            </button>
-        </div>
+        <>
+            {
+                action === "quiz" ?
+                    new Date() < new Date("2025-09-30T16:00:00+08:00") ?
+                    
+                    <div className="flex flex-col gap-[10px]">
+                        <button className={`cursor-pointer flex justify-between items-center w-[100%] bg-[#ffffff] shadow-sm border-[#d0d0d0] border-l-[10px] py-[10px] text-left px-[20px] rounded-lg text-[14px] md:text-[16px] text-[#d0d0d0]`}>
+                            Quiz Not yet available
+                        </button>
+                    </div> :
+                     <div className="flex flex-col gap-[10px]">
+                        <button onClick={onSubmit} className={`cursor-pointer flex justify-between items-center w-[100%] ${isCompleted ? "bg-[#ffdc7a]" : "bg-[#ffffff]"} shadow-sm ${!isCompleted && "border-l-[10px]"} border-[#3eac51] hover:border-[#F9B700] ${!isCompleted && "hover:border-l-[20px]"} py-[10px] ${isCompleted ? "text-[#b18200]" : "text-[#1f783b]"} text-left px-[20px] rounded-lg transition-background-color duration-300 ease-in-out text-[14px] md:text-[16px]`}>
+                            {name} 
+                            {isCompleted ? <div>Completed</div> :
+                                <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 13L7 7L1 1" stroke="#3eac51" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                            }
+                        </button>
+                    </div>
+                :
+
+                 <div className="flex flex-col gap-[10px]">
+                    <button onClick={onSubmit} className={`cursor-pointer flex justify-between items-center w-[100%] ${isCompleted ? "bg-[#ffdc7a]" : "bg-[#ffffff]"} shadow-sm ${!isCompleted && "border-l-[10px]"} border-[#3eac51] hover:border-[#F9B700] ${!isCompleted && "hover:border-l-[20px]"} py-[10px] ${isCompleted ? "text-[#b18200]" : "text-[#1f783b]"} text-left px-[20px] rounded-lg transition-background-color duration-300 ease-in-out text-[14px] md:text-[16px]`}>
+                        {name} 
+                        {isCompleted ? <div>Completed</div> :
+                            <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 13L7 7L1 1" stroke="#3eac51" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                        }
+                    </button>
+                </div>
+            }
+        </>
     )
 }
 
@@ -114,7 +140,8 @@ const QuizorSurvey = () => {
     const handleDownloadSv = async () => {
         const { data, error } = await supabase.storage
             .from("philsan_sv_program_2025") // your bucket
-            .download("SV_program.pdf"); // file path inside bucket 
+            .download("SV_program.pdf"); // file path inside bucket
+ 
         if (error) {
             console.error("Download error:", error.message);
             return;
@@ -171,11 +198,13 @@ const QuizorSurvey = () => {
                                             name="Take Survey"
                                             onSubmit={() => onSubmit({path: "/survey/", action: "survey"})}
                                             isCompleted={participant.survey_completed}
+                                            action="survey"
                                         />
                                         <TakeComponent 
                                             name="Take Quiz"
                                             onSubmit={() => onSubmit({path: "/quiz/", action: "quiz"})}
                                             isCompleted={participant.quiz_result}
+                                            action="quiz"
                                         />
                                         <div className="flex flex-row gap-[20px] justify-between">
                                             <DownloadComponent
