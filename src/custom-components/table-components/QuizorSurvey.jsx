@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getParticipant } from "../../supabase/supabaseService";
 import Certificate from "./Certificate";
 import { pdf } from "@react-pdf/renderer";
+import { supabase } from "/supabaseClient";
 
 const TakeComponent = ({name, onSubmit, isCompleted}) => {
     console.log(isCompleted)
@@ -110,6 +111,26 @@ const QuizorSurvey = () => {
         }
     };
 
+    const handleDownloadSv = async () => {
+        const { data, error } = await supabase.storage
+            .from("philsan_sv_program_2025") // your bucket
+            .download("SV_program.pdf"); // file path inside bucket 
+        if (error) {
+            console.error("Download error:", error.message);
+            return;
+        }
+
+        // Create a Blob URL so the browser can download it
+        const url = window.URL.createObjectURL(data);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "philsan_sv_program_2025.pdf"; // filename for download
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
+    };
+
     const formatName = (first, last) => {
         const fullName = `${first} ${last}`;
         
@@ -122,6 +143,7 @@ const QuizorSurvey = () => {
     }
 
     console.log("participant", participant)
+    console.log("supabase", supabase)
 
     return (
         <div className="pt-[50px] md:pt-[0px]">
@@ -163,7 +185,7 @@ const QuizorSurvey = () => {
                                             />
                                             <DownloadComponent
                                                 name="SV Program"
-                                                onSubmit={() => onSubmit({path: "https://rppprinthub.hflip.co/P38_SP.html#page/2", action: "sv"})}
+                                                onSubmit={handleDownloadSv}
                                                 isCompleted={participant.survey_completed && participant.quiz_result}
                                             />
                                         </div>
