@@ -135,7 +135,18 @@ const SliderModal = (props) => {
         Object.keys(userDetails).forEach(item => {
             if (item !== "remarks") {
                 if (userDetails[item] === "" || userDetails[item] === null) {
-                    errors[item] = "This field is empty";
+                    if (userDetails["reg_request"] === "" || userDetails["reg_request"] === null) {
+                          setUserDetails(prev => ({
+                                ...prev,
+                                errors: {
+                                    ...prev.errors,
+                                    ...errors
+                                },
+                                reg_request: new Date().toISOString()
+                            }));
+                    } else {
+                        errors[item] = "This field is empty";
+                    }
                 } else {
                     errors[item] = "";
                 }
@@ -144,6 +155,7 @@ const SliderModal = (props) => {
 
         // Check if any actual errors exist (non-empty error messages)
         const hasErrors = Object.values(errors).some(error => error !== "");
+              console.log(hasErrors)
 
         // Always update errors in state
         setUserDetails(prev => ({
@@ -415,22 +427,28 @@ const SliderModal = (props) => {
                                                     </div>
                                                 )
                                             } else if(key === "reg_request") {
-                                                console.log("userDetails[key]", userDetails[key] === "")
                                                 return (
                                                     <div key={key} className="flex flex-col gap-[2px]">
                                                         <p className="text-[#67706a] text-[12px]">{userDetails?.fileNames?.[key]}:</p>
-                                                        <input 
-                                                            className={`font-[400] rounded-lg p-[10px] ${userDetails["errors"][key] && "border-[2px] border-[red]"} ${condition ? "bg-[#ede9dc] text-[#93896c]" : "bg-[#acc5b4] text-[#000000]"} text-[14px]`} 
+                                                        <input
+                                                            className={`font-[400] rounded-lg p-[10px] 
+                                                                ${userDetails.errors?.[key] ? "border-[2px] border-[red]" : ""} 
+                                                                ${condition ? "bg-[#ede9dc] text-[#93896c]" : "bg-[#acc5b4] text-[#000000]"} 
+                                                                text-[14px]`} 
                                                             name={key} 
-                                                            value={userDetails[key] === "" ? new Date().toISOString() : userDetails[key]}
+                                                            value={
+                                                                userDetails[key] === "" || userDetails[key] === null
+                                                                ? new Date().toISOString()   // autofill when null/empty
+                                                                : userDetails[key]           // otherwise, use actual value
+                                                            }
                                                             onChange={(e) =>
                                                                 setUserDetails((prev) => ({
                                                                 ...prev,
-                                                                [key]: e.target.value,
+                                                                [key]: e.target.value,       // let the user overwrite it freely
                                                                 }))
                                                             }
-                                                        readOnly={condition}
-                                                        />
+                                                            readOnly={condition}
+                                                            />
                                                     </div>
                                                 )
                                             } else {
