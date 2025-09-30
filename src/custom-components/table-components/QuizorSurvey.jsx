@@ -51,25 +51,43 @@ const TakeComponent = ({name, onSubmit, isCompleted, action}) => {
     )
 }
 
-const DownloadComponent = ({name, onSubmit, isCompleted}) => {
+const DownloadComponent = ({name, onSubmit, isCompleted, action}) => {
 
     return (
-        <div className="w-[50%]">
-            <div className="flex flex-col gap-[10px]">
-                {
-                    isCompleted ?
-                    <button onClick={onSubmit} className={`cursor-pointer flex flex-col justify-between items-center w-[100%] bg-[#3eac51] hover:bg-[#46ca5d] text-[#ffffff] py-[20px] px-[10px] text-[12px] md:text-[14px] rounded-lg transition-background-color duration-300 ease-in-out`}>
-                        <span>Download</span>
-                        <span>{name}</span>
-                    </button> :
-                    <button className={`cursor-pointer flex flex-col justify-between items-center w-[100%] bg-[#d0d0d0] hover:bg-[#bfbfbf] text-[#ffffff] py-[20px] px-[10px] text-[12px] md:text-[14px] rounded-lg transition-background-color duration-300 ease-in-out`}>
-                        <span>Download</span>
-                        <span>{name}</span>
-                    </button>
-                }
-                
-            </div>
-        </div>
+        <>
+            {
+                action === "cert" ?
+
+                <div className="w-[50%]">
+                    <div className="flex flex-col gap-[10px]">
+                        {
+                            isCompleted ?
+                            <button onClick={onSubmit} className={`cursor-pointer flex flex-col justify-center items-center w-[100%] bg-[#3eac51] hover:bg-[#46ca5d] text-[#ffffff] py-[20px] px-[10px] text-[12px] md:text-[14px] rounded-lg transition-background-color duration-300 ease-in-out`}>
+                                <span>Download</span>
+                                <span>{name}</span>
+                            </button> 
+                            :
+                            <button className={`cursor-pointer flex flex-col justify-center items-center w-[100%] bg-[#d0d0d0] hover:bg-[#bfbfbf] text-[#ffffff] py-[20px] px-[10px] text-[12px] md:text-[14px] rounded-lg transition-background-color duration-300 ease-in-out`}>
+                                <span>Download</span>
+                                <span>{name}</span>
+                            </button>
+                        }
+                        
+                    </div>
+                </div>
+                :
+
+                <div className="w-[50%]">
+                    <div className="flex flex-col gap-[10px]">
+                        <button className={`cursor-pointer flex flex-col justify-center items-center w-[100%] bg-[#d0d0d0] hover:bg-[#bfbfbf] text-[#ffffff] py-[20px] px-[10px] text-[12px] md:text-[14px] rounded-lg transition-background-color duration-300 ease-in-out`}>
+                            <span>Available on October 10, 2025</span>
+                            <span>{name}</span>
+                        </button>
+                    </div>
+                </div>
+
+            }
+        </>
     )
 }
 
@@ -211,11 +229,13 @@ const QuizorSurvey = () => {
                                                 name="Certificate"
                                                 onSubmit={handleDownload}
                                                 isCompleted={participant.survey_completed && participant.quiz_result}
+                                                action="cert"
                                             />
                                             <DownloadComponent
                                                 name="SV Program"
                                                 onSubmit={handleDownloadSv}
                                                 isCompleted={participant.survey_completed && participant.quiz_result}
+                                                action="sv"
                                             />
                                         </div>
                                     </div>
