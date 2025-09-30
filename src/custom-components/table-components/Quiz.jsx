@@ -247,7 +247,7 @@ const Quiz = () => {
                             session.map((item, index) => (
                                     <div className={"shadow-lg pt-[10px] pb-[20px] bg-[#ffffff]"} key={"session"+index+item.id}>
                                         <div className="pb-[5px]">
-                                            <div className="flex justify-between items-center py-[7px] px-[20px] rounded-sm shadow-xl bg-[#ffffff]">
+                                            <div className="flex justify-between items-center py-[7px] px-[0px] lg:px-[20px] rounded-sm shadow-xl bg-[#ffffff]">
                                                 <h5 className={`font-[600] text-[14px] md:text-[24px] text-[#1f783b]`}>{item.session}</h5>
                                             </div>
                                             {
@@ -260,14 +260,21 @@ const Quiz = () => {
 
                                                         return (
                                                             // accordion
-                                                            <div className={`speaker px-[40px] bg-[#fafafa]`} key={"speaker"+speaker.id}>
+                                                            <div className={`speaker px-[0px] lg:px-[40px] bg-[#fafafa]`} key={"speaker"+speaker.id}>
                                                                 <div onClick={(e) => handleAccordion(speakerId)} className="flex justify-between items-center py-[10px] border-[#e8e8e8] border-b-[2px]">
                                                                     <h5 className={`font-[500] text-[14px] md:text-[18px] text-[#1f783b]`}><strong>Speaker:</strong> {speaker.name}</h5>
+                                                                    {quizChoiceLength === 0 ?
+                                                                        <p className="text-[12px] text-[#f9b700] block md:hidden">Complete</p> :
+                                                                        <div className="flex text-[12px] text-[#9f9f9f] w-[25px] md:w-auto block md:hidde">
+                                                                            <p>{quizChoiceLength} /</p>
+                                                                            <p>{quizLength}</p>
+                                                                        </div>
+                                                                    }
                                                                     {/* arrow */}
                                                                     <div className="flex items-center gap-[20px]">
                                                                         {quizChoiceLength === 0 ?
-                                                                            <p className="text-[12px] text-[#f9b700]">Complete</p> :
-                                                                            <div className="flex text-[12px] text-[#9f9f9f]">
+                                                                            <p className="text-[12px] text-[#f9b700] hidden md:block">Complete</p> :
+                                                                            <div className="flex text-[12px] text-[#9f9f9f] w-[25px] md:w-auto hidden md:block">
                                                                                 <p>{quizChoiceLength} /</p>
                                                                                 <p>{quizLength}</p>
                                                                             </div>
@@ -281,7 +288,7 @@ const Quiz = () => {
                                                                 </div>
                                                                 <div
                                                                     className={`transition-all duration-500 bg-[#ebebeb] overflow-hidden ${
-                                                                        isOpen ? "max-h-[1000px] py-[10px]" : "max-h-0"
+                                                                        isOpen ? "max-h-[1000px] py-[10px] overflow-y-scroll" : "max-h-0 overflow-hidden"
                                                                     }`}
                                                                 >   
                                                                     {
