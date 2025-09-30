@@ -265,7 +265,7 @@ const Quiz = () => {
                                                                     <h5 className={`font-[500] text-[14px] md:text-[18px] text-[#1f783b]`}><strong>Speaker:</strong> {speaker.name}</h5>
                                                                     {quizChoiceLength === 0 ?
                                                                         <p className="text-[12px] text-[#f9b700] block md:hidden">Complete</p> :
-                                                                        <div className="flex text-[12px] text-[#9f9f9f] w-[25px] md:w-auto block md:hidde">
+                                                                        <div className="flex text-[12px] text-[#9f9f9f] w-[25px] flex md:hidden">
                                                                             <p>{quizChoiceLength} /</p>
                                                                             <p>{quizLength}</p>
                                                                         </div>
@@ -274,7 +274,7 @@ const Quiz = () => {
                                                                     <div className="flex items-center gap-[20px]">
                                                                         {quizChoiceLength === 0 ?
                                                                             <p className="text-[12px] text-[#f9b700] hidden md:block">Complete</p> :
-                                                                            <div className="flex text-[12px] text-[#9f9f9f] w-[25px] md:w-auto hidden md:block">
+                                                                            <div className="flex text-[12px] text-[#9f9f9f] hidden md:flex">
                                                                                 <p>{quizChoiceLength} /</p>
                                                                                 <p>{quizLength}</p>
                                                                             </div>
