@@ -135,7 +135,18 @@ const SliderModal = (props) => {
         Object.keys(userDetails).forEach(item => {
             if (item !== "remarks") {
                 if (userDetails[item] === "" || userDetails[item] === null) {
-                    errors[item] = "This field is empty";
+                    if (userDetails["reg_request"] === "" || userDetails["reg_request"] === null) {
+                          setUserDetails(prev => ({
+                                ...prev,
+                                errors: {
+                                    ...prev.errors,
+                                    ...errors
+                                },
+                                reg_request: new Date().toISOString()
+                            }));
+                    } else {
+                        errors[item] = "This field is empty";
+                    }
                 } else {
                     errors[item] = "";
                 }
@@ -144,6 +155,7 @@ const SliderModal = (props) => {
 
         // Check if any actual errors exist (non-empty error messages)
         const hasErrors = Object.values(errors).some(error => error !== "");
+              console.log(hasErrors)
 
         // Always update errors in state
         setUserDetails(prev => ({
@@ -296,7 +308,7 @@ const SliderModal = (props) => {
                                                 }
                                         })}
                                     </div>
-                                    <div className="relative">
+                                    {/* <div className="relative">
                                         <div onClick={() => handlePopup("delete")} className={`justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] ${isDeleteRamarksOpen ? "bg-[#ba4b4b]" : "bg-[#98d3ab] hover:bg-[#ba4b4b]"} cursor-pointer transition-background-color duration-300 ease-in-out`}>
                                            
                                             <svg className="w-[15px] lg:w-[25px] h-[15px] lg:h-[25px]" viewBox="0 0 16 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -327,14 +339,14 @@ const SliderModal = (props) => {
                                                     )
                                                 }
                                         })}
-                                    </div>
+                                    </div> */}
                                 </div>
 
                                 {/* TimeIn and TimeOut */}
                                 <div className="flex flex-col gap-[5px] lg:gap-[20px] pt-[20px]">
                                     <div className="">
-                                        {/* <div onClick={() => props.handleTime({action: "time-in"})} className="justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] bg-[#98d3ab] hover:bg-[#1f783b] cursor-pointer transition-background-color duration-300 ease-in-out"> */}
-                                          <div className="justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] bg-[#98d3ab] hover:bg-[#1f783b] cursor-pointer transition-background-color duration-300 ease-in-out">
+                                        <div onClick={() => props.handleTime({action: "time-in"})} className="justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] bg-[#98d3ab] hover:bg-[#1f783b] cursor-pointer transition-background-color duration-300 ease-in-out">
+                                          {/* <div className="justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] bg-[#98d3ab] hover:bg-[#1f783b] cursor-pointer transition-background-color duration-300 ease-in-out"> */}
                                             <svg className="w-[20px] lg:w-[25px] h-[20px] lg:h-[25px]" clipRule="evenodd" fillRule="evenodd" strokeLinejoin="round" stroke-miterlimit="2" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
                                                 <g transform="translate(-288 -288)" fill="#ffffff">
                                                     <path d="m298 308v7c0 .796.316 1.559.879 2.121.562.563 1.325.879 2.121.879h14c.796 0 1.559-.316 2.121-.879.563-.562.879-1.325.879-2.121v-22c0-.796-.316-1.559-.879-2.121-.562-.563-1.325-.879-2.121-.879-3.463 0-10.537 0-14 0-.796 0-1.559.316-2.121.879-.563.562-.879 1.325-.879 2.121v7c0 .552.448 1 1 1s1-.448 1-1v-7c0-.265.105-.52.293-.707.187-.188.442-.293.707-.293h14c.265 0 .52.105.707.293.188.187.293.442.293.707v22c0 .265-.105.52-.293.707-.187.188-.442.293-.707.293h-14c-.265 0-.52-.105-.707-.293-.188-.187-.293-.442-.293-.707v-7c0-.552-.448-1-1-1s-1 .448-1 1zm9 7h2c.552 0 1-.448 1-1s-.448-1-1-1h-2c-.552 0-1 .448-1 1s.448 1 1 1zm-1.929-12h-14.071c-.552 0-1 .448-1 1s.448 1 1 1h14.071l-1.778 1.778c-.39.39-.39 1.024 0 1.414.39.391 1.024.391 1.414 0l3.485-3.485c.391-.39.391-1.024 0-1.414l-3.5-3.5c-.39-.39-1.024-.39-1.414 0s-.39 1.024 0 1.414z"/>
@@ -345,8 +357,8 @@ const SliderModal = (props) => {
                                     </div>
 
                                     <div>
-                                        {/* <div onClick={() => props.handleTime({action: "time-out"})} className="justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] bg-[#98d3ab] hover:bg-[#424242] cursor-pointer transition-background-color duration-300 ease-in-out"> */}
-                                          <div className="justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] bg-[#98d3ab] hover:bg-[#424242] cursor-pointer transition-background-color duration-300 ease-in-out">
+                                        <div onClick={() => props.handleTime({action: "time-out"})} className="justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] bg-[#98d3ab] hover:bg-[#424242] cursor-pointer transition-background-color duration-300 ease-in-out">
+                                          {/* <div className="justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] bg-[#98d3ab] hover:bg-[#424242] cursor-pointer transition-background-color duration-300 ease-in-out"> */}
                                             <svg className="w-[20px] lg:w-[25px] h-[20px] lg:h-[25px]" clipRule="evenodd" fillRule="evenodd" strokeLinejoin="round" stroke-miterlimit="2" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
                                                 <g transform="translate(-336 -288)" fill="#ffffff">
                                                     <path d="m346 308v7c0 .796.316 1.559.879 2.121.562.563 1.325.879 2.121.879h14c.796 0 1.559-.316 2.121-.879.563-.562.879-1.325.879-2.121v-22c0-.796-.316-1.559-.879-2.121-.562-.563-1.325-.879-2.121-.879-3.463 0-10.537 0-14 0-.796 0-1.559.316-2.121.879-.563.562-.879 1.325-.879 2.121v7c0 .552.448 1 1 1s1-.448 1-1c0 0 0-4.348 0-7 0-.265.105-.52.293-.707.187-.188.442-.293.707-.293h14c.265 0 .52.105.707.293.188.187.293.442.293.707v22c0 .265-.105.52-.293.707-.187.188-.442.293-.707.293h-14c-.265 0-.52-.105-.707-.293-.188-.187-.293-.442-.293-.707v-7c0-.552-.448-1-1-1s-1 .448-1 1zm9 7h2c.552 0 1-.448 1-1s-.448-1-1-1h-2c-.552 0-1 .448-1 1s.448 1 1 1zm-13.586-10h14.071c.552 0 1-.448 1-1s-.448-1-1-1h-14.071l1.793-1.793c.39-.39.39-1.024 0-1.414s-1.024-.39-1.414 0l-3.5 3.5c-.391.39-.391 1.024 0 1.414l3.485 3.485c.39.391 1.024.391 1.414 0 .391-.39.391-1.024 0-1.414z"/>
@@ -356,8 +368,8 @@ const SliderModal = (props) => {
                                         </div>
                                     </div>
                                     <div>
-                                        {/* <div onClick={() => props.handleTime({action: "delete-timein"})} className="justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] bg-[#98d3ab] hover:bg-[#ba4b4b] cursor-pointer transition-background-color duration-300 ease-in-out"> */}
-                                            <div className="justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] bg-[#98d3ab] hover:bg-[#ba4b4b] cursor-pointer transition-background-color duration-300 ease-in-out">
+                                        <div onClick={() => props.handleTime({action: "delete-timein"})} className="justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] bg-[#98d3ab] hover:bg-[#ba4b4b] cursor-pointer transition-background-color duration-300 ease-in-out">
+                                            {/* <div className="justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] bg-[#98d3ab] hover:bg-[#ba4b4b] cursor-pointer transition-background-color duration-300 ease-in-out"> */}
                                             <svg className="w-[20px] lg:w-[25px] h-[20px] lg:h-[25px]" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                 <g id="Layer_15" data-name="Layer 15" fill="#ffffff">
                                                     <path d="m12 20a8 8 0 1 1 8-8 1 1 0 0 0 2 0 10 10 0 1 0 -10 10 1 1 0 0 0 0-2z"/>
@@ -369,8 +381,8 @@ const SliderModal = (props) => {
                                         </div>
                                     </div>
                                     <div>
-                                        {/* <div onClick={() => props.handleTime({action: "delete-timeout"})} className="justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] bg-[#98d3ab] hover:bg-[#ba4b4b] cursor-pointer transition-background-color duration-300 ease-in-out"> */}
-                                            <div className="justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] bg-[#98d3ab] hover:bg-[#ba4b4b] cursor-pointer transition-background-color duration-300 ease-in-out">
+                                        <div onClick={() => props.handleTime({action: "delete-timeout"})} className="justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] bg-[#98d3ab] hover:bg-[#ba4b4b] cursor-pointer transition-background-color duration-300 ease-in-out">
+                                            {/* <div className="justify-center md:justify-start flex gap-[10px] items-center px-[10px] md:px-[20px] py-[10px] rounded-[8px] bg-[#98d3ab] hover:bg-[#ba4b4b] cursor-pointer transition-background-color duration-300 ease-in-out"> */}
                                             <svg className="w-[20px] lg:w-[25px] h-[20px] lg:h-[25px]" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                 <g id="Layer_15" data-name="Layer 15" fill="#ffffff">
                                                     <path d="m12 20a8 8 0 1 1 8-8 1 1 0 0 0 2 0 10 10 0 1 0 -10 10 1 1 0 0 0 0-2z"/>
@@ -415,22 +427,28 @@ const SliderModal = (props) => {
                                                     </div>
                                                 )
                                             } else if(key === "reg_request") {
-                                                console.log("userDetails[key]", userDetails[key] === "")
                                                 return (
                                                     <div key={key} className="flex flex-col gap-[2px]">
                                                         <p className="text-[#67706a] text-[12px]">{userDetails?.fileNames?.[key]}:</p>
-                                                        <input 
-                                                            className={`font-[400] rounded-lg p-[10px] ${userDetails["errors"][key] && "border-[2px] border-[red]"} ${condition ? "bg-[#ede9dc] text-[#93896c]" : "bg-[#acc5b4] text-[#000000]"} text-[14px]`} 
+                                                        <input
+                                                            className={`font-[400] rounded-lg p-[10px] 
+                                                                ${userDetails.errors?.[key] ? "border-[2px] border-[red]" : ""} 
+                                                                ${condition ? "bg-[#ede9dc] text-[#93896c]" : "bg-[#acc5b4] text-[#000000]"} 
+                                                                text-[14px]`} 
                                                             name={key} 
-                                                            value={userDetails[key] === "" ? new Date().toISOString() : userDetails[key]}
+                                                            value={
+                                                                userDetails[key] === "" || userDetails[key] === null
+                                                                ? new Date().toISOString()   // autofill when null/empty
+                                                                : userDetails[key]           // otherwise, use actual value
+                                                            }
                                                             onChange={(e) =>
                                                                 setUserDetails((prev) => ({
                                                                 ...prev,
-                                                                [key]: e.target.value,
+                                                                [key]: e.target.value,       // let the user overwrite it freely
                                                                 }))
                                                             }
-                                                        readOnly={condition}
-                                                        />
+                                                            readOnly={condition}
+                                                            />
                                                     </div>
                                                 )
                                             } else {

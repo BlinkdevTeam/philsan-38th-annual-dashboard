@@ -7,7 +7,8 @@ import {
     getParticipants,
     createSponsor,
     deleteSponsor,
-    updateTimein
+    updateTimein,
+    getTimeins
 } from '../../supabase/supabaseService';
 import { supabase } from "/supabaseClient";
 import { Toaster } from 'react-hot-toast';
@@ -43,6 +44,7 @@ const MainTable = ({sponsor}) => {
         password: "",
         errors: {}
     })
+    const currentTimeins = approved.filter(i => i.time_in !== null)
     const userRegStats = userStatus === "Approved" ? approved : 
                         userStatus === "Pending" ? pendings :
                         userStatus === "Invited" ? invited : 
@@ -63,6 +65,9 @@ const MainTable = ({sponsor}) => {
     const [openPopupId, setOpenPopupId] = useState(null);
     const [goToRegsitration, setgoToRegistration] = useState(false)
     const [sidebarStatus, setSidebarStatus] = useState(false)
+
+
+    console.log("currentTimeins", currentTimeins.length)
 
     useEffect(() => {
         if (sponsor && sponsor[0] && sponsor[0].sponsor_name) {
@@ -211,9 +216,7 @@ const MainTable = ({sponsor}) => {
         setgoToRegistration(reg)
     }
 
-    const openSidebar = () => {
-
-    }
+    
 
     return (
         <div>
@@ -286,6 +289,7 @@ const MainTable = ({sponsor}) => {
                                         userStatus={userStatus}
                                         setUserStatus={() => setContent("Canceled", toFilterSponsor, sponsorPass)}
                                     />
+                                    <p>Current Participants: {currentTimeins.length}</p>
                                     {/* <div  onClick={() => handleGotoReg("bulk")} className="hidden md:block cursor-pointer py-[8px] px-[10px] bg-[#ffe7a4] text-[14px] rounded-lg">
                                         <button  className="text-[12px] text-[#000000] cursor-pointer"><strong>Bulk</strong> Registration via CSV</button>
                                     </div>
