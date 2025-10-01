@@ -289,7 +289,14 @@ const MainTable = ({sponsor}) => {
                                         userStatus={userStatus}
                                         setUserStatus={() => setContent("Canceled", toFilterSponsor, sponsorPass)}
                                     />
-                                    <p>Current Participants: {currentTimeins.length}</p>
+                                    <div className={`rounded-lg flex cursor-pointer py-[5px] px-[20px] gap-[10px] justify-center items-center h-max bg-[#f9b700]`}>
+                                        <div className={`flex gap-[10px] items-center w-[100%] rounded-[8px]`}>
+                                            <p className="text-[#ffffff] text-[12px]">Total Attendees:</p>
+                                        </div>
+                                        <div className={`flex justify-center rounded-[8px]`}>
+                                            <div className={`flex justify-center items-center text-[#ffffff]`}>{currentTimeins.length}</div>
+                                        </div>
+                                    </div>
                                     {/* <div  onClick={() => handleGotoReg("bulk")} className="hidden md:block cursor-pointer py-[8px] px-[10px] bg-[#ffe7a4] text-[14px] rounded-lg">
                                         <button  className="text-[12px] text-[#000000] cursor-pointer"><strong>Bulk</strong> Registration via CSV</button>
                                     </div>
