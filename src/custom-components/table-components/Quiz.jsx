@@ -230,18 +230,24 @@ const Quiz = () => {
                     </div>
                     <div className="flex flex-col items-end">
                         <h6 className="font-[Fraunces] text-[32px] text-[#1f783b] font-[700]">Quiz</h6>
-                        <div className="flex gap-[20px]">
-                            {
-                                session.map((item, index) => (
-                                    <div className="" key={`session-nav-${index}`}>
-                                        <p>{index !== 0 ? `Session ${index}` : "Plenary"}</p>
-                                    </div>
-                                ))
-                            }
-                        </div>
                     </div>
                 </div>
-                <div className="relative flex flex-col md:flex-row justify-between pt-[50px] gap-[20px] md:gap-[50px] z-[1]">
+                <ol className="flex flex-col list-decimal pl-5 text-sm leading-relaxed pt-[50px] ml-auto">
+                    <li>
+                        <strong>All plenary session questions must be completed.</strong>
+                    </li>
+                    <li>
+                        <strong>
+                            {`At least four (4) topics from the breakout sessions must be
+                            answered.`}
+                        </strong>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            {`(Participants may select topics from any of the three breakout
+                        sessions.)`}
+                        </p>
+                    </li>
+                </ol>
+                <div className="relative flex flex-col md:flex-row justify-between pt-[20px] gap-[20px] md:gap-[50px] z-[1]">
                     <div className="flex flex-col gap-[30px] w-[100%]">
                         {
                             session.map((item, index) => (
