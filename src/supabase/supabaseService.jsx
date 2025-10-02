@@ -141,7 +141,7 @@ export const getTimeins = async () => {
 };
 
 export const getParticipant = async (email) => {
-    const { data, error } = await supabase.from('philsan_registration_2025').select('*').eq('email', email).order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('philsan_registration_2025').select('*').ilike('email', email).order('created_at', { ascending: false });
     if (error) throw error
     return data
 }
