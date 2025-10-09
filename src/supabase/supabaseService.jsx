@@ -243,6 +243,30 @@ export const getParticipantQuiz = async (email) => {
     return data;
 };
 
+
+export const getPresentAbsent = async () => {
+  const { data, error } = await supabase.rpc("attendance_summary");
+
+  if (error) {
+    console.error("Error fetching:", error);
+    return null;
+  }
+  return data[0];
+};
+
+export const getNonvsSponsored = async () => {
+  const { data, error } = await supabase.rpc("sponsorship_summary");
+
+  if (error) {
+    console.error("Error fetching:", error);
+    return null;
+  }
+
+  console.log(data)
+  return data[0];
+};
+
+
 export const storageUpload = async (filePath, file) => {
   const { data, error } = await supabase
     .storage
