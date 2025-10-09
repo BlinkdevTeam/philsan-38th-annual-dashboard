@@ -9,7 +9,6 @@ import { pdf } from "@react-pdf/renderer";
 import { supabase } from "/supabaseClient";
 
 const TakeComponent = ({name, onSubmit, isCompleted, action}) => {
-    console.log(isCompleted)
     const cutoff = new Date("2025-09-30T16:00:00"); // Sept 30, 2025 4:00 PM
     const now = new Date();
 
@@ -51,7 +50,7 @@ const TakeComponent = ({name, onSubmit, isCompleted, action}) => {
     )
 }
 
-const DownloadComponent = ({name, onSubmit, isCompleted, action}) => {
+const DownloadComponent = ({name, onSubmit, isCompleted, action, downloading, progress}) => {
 
     return (
         <>
@@ -79,10 +78,31 @@ const DownloadComponent = ({name, onSubmit, isCompleted, action}) => {
 
                 <div className="w-[50%]">
                     <div className="flex flex-col gap-[10px]">
-                        <button className={`cursor-pointer flex flex-col justify-center items-center w-[100%] bg-[#d0d0d0] hover:bg-[#bfbfbf] text-[#ffffff] py-[20px] px-[10px] text-[12px] md:text-[14px] rounded-lg transition-background-color duration-300 ease-in-out`}>
-                            <span>Available on October 10, 2025</span>
-                            <span>{name}</span>
-                        </button>
+                        {
+                            isCompleted ?
+                            <button onClick={onSubmit} className={`cursor-pointer flex flex-col justify-center items-center w-[100%] bg-[#3eac51] hover:bg-[#46ca5d] text-[#ffffff] py-[20px] px-[10px] text-[12px] md:text-[14px] rounded-lg transition-background-color duration-300 ease-in-out`}>
+                                <span>{downloading ? "Downloading..." : "Download"}</span>
+                                {
+                                    downloading ?
+                                    <div className="flex w-[100%] items-center gap-[20px]">
+                                        <div className="w-[50%] bg-gray-200 rounded-full h-4">
+                                            <div
+                                            className="bg-blue-600 h-4 rounded-full transition-all duration-300"
+                                            style={{ width: `${progress}%` }}
+                                            ></div>
+                                        </div>
+                                        <p className="text-sm text-[#ffffff]">{progress}%</p>
+                                    </div> :  <span>{name}</span>
+                                }
+                               
+                            </button> 
+                            :
+                            <button className={`cursor-pointer flex flex-col justify-center items-center w-[100%] bg-[#d0d0d0] hover:bg-[#bfbfbf] text-[#ffffff] py-[20px] px-[10px] text-[12px] md:text-[14px] rounded-lg transition-background-color duration-300 ease-in-out`}>
+                                <span>Download</span>
+                                <span>{name}</span>
+                            </button>
+                        }
+                        
                     </div>
                 </div>
 
@@ -95,6 +115,9 @@ const QuizorSurvey = () => {
     const navigate = useNavigate()
     const { email } = useParams()
     const [participant, setParticipant] = useState([])
+    const [loading, setLoading] = useState(false);
+    const [progress, setProgress] = useState(0);
+    const [downloading, setDownloading] = useState(false);
 
     useEffect(() => {
         const fetchParticipant = async () => {
@@ -155,26 +178,91 @@ const QuizorSurvey = () => {
         }
     };
 
-    const handleDownloadSv = async () => {
-        const { data, error } = await supabase.storage
-            .from("philsan_sv_program_2025") // your bucket
-            .download("SV_program.pdf"); // file path inside bucket
- 
-        if (error) {
-            console.error("Download error:", error.message);
-            return;
+    // const handleDownloadSv = async () => {
+    //     setLoading(true);
+
+    //     const { data, error } = await supabase.storage
+    //         .from("philsan_sv_program_2025")
+    //         .download("SV_program.pdf");
+
+    //     setLoading(false);
+
+    //     if (error) {
+    //         console.error("Download error:", error.message);
+    //         alert("Error downloading file: " + error.message);
+            
+    //         return;
+    //     }
+
+    //     const url = window.URL.createObjectURL(data);
+    //     const a = document.createElement("a");
+    //     a.href = url;
+    //     a.download = "philsan_sv_program_2025.pdf";
+    //     document.body.appendChild(a);
+    //     a.click();
+    //     a.remove();
+    //     window.URL.revokeObjectURL(url);
+    // };
+
+
+     const handleDownloadSv = async () => {
+        setDownloading(true);
+        setProgress(0);
+
+        // Get the public URL of your file
+        const { data } = supabase.storage
+        .from("philsan_sv_program_2025")
+        .getPublicUrl("SV_program.pdf");
+
+        const fileUrl = data.publicUrl;
+        if (!fileUrl) {
+        alert("File not found or bucket not public.");
+        setDownloading(false);
+        return;
         }
 
-        // Create a Blob URL so the browser can download it
-        const url = window.URL.createObjectURL(data);
+        // Use fetch with streaming to track progress
+        const response = await fetch(fileUrl);
+        if (!response.ok) throw new Error("Network response was not ok");
+
+        const contentLength = response.headers.get("content-length");
+        if (!contentLength) {
+        console.warn("No content-length header, cannot show progress.");
+        const blob = await response.blob();
+        triggerDownload(blob);
+        setDownloading(false);
+        return;
+        }
+
+        const total = parseInt(contentLength, 10);
+        let loaded = 0;
+        const reader = response.body.getReader();
+        const chunks = [];
+
+        while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        loaded += value.length;
+        setProgress(Math.round((loaded / total) * 100));
+        }
+
+        const blob = new Blob(chunks);
+        triggerDownload(blob);
+        setDownloading(false);
+    };
+
+    const triggerDownload = (blob) => {
+        const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = "philsan_sv_program_2025.pdf"; // filename for download
+        a.download = "philsan_sv_program_2025.pdf";
         document.body.appendChild(a);
         a.click();
         a.remove();
         window.URL.revokeObjectURL(url);
     };
+
 
     const formatName = (first, last) => {
         const fullName = `${first} ${last}`;
@@ -187,8 +275,6 @@ const QuizorSurvey = () => {
             .join(" ");
     }
 
-    console.log("participant", participant)
-    console.log("supabase", supabase)
 
     return (
         <div className="pt-[50px] md:pt-[0px]">
@@ -230,12 +316,16 @@ const QuizorSurvey = () => {
                                                 onSubmit={handleDownload}
                                                 isCompleted={participant.survey_completed && participant.quiz_result}
                                                 action="cert"
+                                                downloading={""}
+                                                progress={progress}
                                             />
                                             <DownloadComponent
                                                 name="SV Program"
                                                 onSubmit={handleDownloadSv}
                                                 isCompleted={participant.survey_completed && participant.quiz_result}
                                                 action="sv"
+                                                downloading={downloading}
+                                                progress={progress}
                                             />
                                         </div>
                                     </div>
