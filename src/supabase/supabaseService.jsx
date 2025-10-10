@@ -262,9 +262,67 @@ export const getNonvsSponsored = async () => {
     return null;
   }
 
-  console.log(data)
   return data[0];
 };
+
+export const getParticpantsponsor = async () => {
+  const { data, error } = await supabase.rpc("get_participant_count_by_sponsor");
+
+  if (error) {
+    console.error("Error fetching:", error);
+    return null;
+  }
+
+  return data;
+};
+
+export const getParticipantsbymembership = async () => {
+  const { data, error } = await supabase.rpc("membership_summary");
+
+  if (error) {
+    console.error("Error fetching:", error);
+    return null;
+  }
+
+  return data;
+};
+
+
+export const getParticipantsbytimein = async () => {
+  const { data, error } = await supabase.rpc("attendance_trend");
+
+  if (error) {
+    console.error("Error fetching:", error);
+    return null;
+  }
+
+  return data;
+};
+
+
+export const getSurveycountbyparticipant = async () => {
+  const { data, error } = await supabase.rpc("get_survey_count_by_participant");
+
+  if (error) {
+    console.error("Error fetching:", error);
+    return null;
+  }
+
+  return data;
+};
+
+
+export const getRegistrationtime = async () => {
+  const { data, error } = await supabase.rpc("get_participants_created_at");
+
+  if (error) {
+    console.error("Error fetching:", error);
+    return null;
+  }
+
+  return data;
+};
+
 
 
 export const storageUpload = async (filePath, file) => {

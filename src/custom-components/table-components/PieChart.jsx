@@ -22,25 +22,64 @@ export default function DownloadablePieChart(props) {
     };
 
     return (
-        <div className="flex flex-col w-fit items-center">
+        <div className="flex flex-col w-fit items-center pt-[50px]">
             {/* Wrap chart in a div to capture it */}
-            <div className="chart w-fit" ref={chartRef}>
-                <PieChart width={500} height={400}>
-                <Pie
-                    data={data}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={120}
-                    innerRadius={70}
-                    label>
-                    {data.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
+            <div className="chart w-full" ref={chartRef}>
+                <PieChart width={1050} height={850}>
+                    <Pie
+                        data={data}
+                        dataKey="value"
+                        nameKey="name"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={320}
+                        innerRadius={200}
+                        labelLine={({ points, stroke }) => {
+                            const [start, end] = points;
+                            return (
+                            <path
+                                d={`M${start.x},${start.y}L${end.x},${end.y}`}
+                                stroke={stroke}
+                                strokeWidth={5}
+                                fill="none"
+                            />
+                            );
+                        }}
+                        label={({ name, percent, cx, cy, midAngle, outerRadius }) => {
+                            const RADIAN = Math.PI / 180;
+                            const radius = outerRadius + 40; // ✅ move labels outside the pie
+                            const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                            const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+                            return (
+                            <text
+                                x={x}
+                                y={y}
+                                fill="#333"
+                                textAnchor={x > cx ? "start" : "end"}
+                                dominantBaseline="central"
+                                style={{
+                                fontSize: "48px",  // ✅ nice readable size
+                                fontWeight: "600",
+                                }}
+                            >
+                                {`${(percent * 100).toFixed(1)}%`}
+                            </text>
+                            );
+                        }}
+                        >
+                        {data.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                    </Pie>
+                    <Tooltip />
+                    <Legend
+                        wrapperStyle={{
+                            paddingTop: "50px", 
+                            fontSize: "48px",
+                            fontWeight: "600",
+                        }}
+                    />
                 </PieChart>
             </div>
 
