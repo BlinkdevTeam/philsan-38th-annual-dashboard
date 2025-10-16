@@ -10,6 +10,8 @@ import Quiz from './custom-components/table-components/Quiz'
 import QuizorSurvey from './custom-components/table-components/QuizorSurvey'
 import CertificateViewer from './custom-components/table-components/CertificateViewer'
 import ForReports from './custom-components/table-components/ForReports'
+import PresentationLogin from './custom-components/table-components/PresentationLogin'
+import Presentation from './custom-components/table-components/Presentation'
 import Sponsors from './Config/Sponsors'
 import { Routes, Route, useParams } from 'react-router-dom'
 import { getSponsorByPassword } from './supabase/supabaseService'
@@ -61,6 +63,8 @@ function App() {
       <Route path="/quiz/:email" element={<Quiz/>} />
       <Route path="/certificate/:email" element={<CertificateViewer/>} />
       <Route path="/for-reports/:email" element={<ForReports/>} />
+      <Route path="/speaker-presentation-login" element={<PresentationLogin/>} />
+      <Route path="/speaker-presentation/:email" element={<Presentation/>} />
        {/* Catch-all route for 404 */}
       {/* <Route path="*" element={<NotFound />} /> */}
     </Routes>
