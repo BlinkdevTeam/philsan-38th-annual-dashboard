@@ -15,6 +15,7 @@ import Presentation from './custom-components/table-components/Presentation'
 import Sponsors from './Config/Sponsors'
 import { Routes, Route, useParams } from 'react-router-dom'
 import { getSponsorByPassword } from './supabase/supabaseService'
+import ApiFetcher from './custom-components/table-components/APIFetcher'
 import './App.css'
 
 function PasswordRoute() {
@@ -65,6 +66,7 @@ function App() {
       <Route path="/for-reports/:email" element={<ForReports/>} />
       <Route path="/speaker-presentation-login" element={<PresentationLogin/>} />
       <Route path="/speaker-presentation/:email" element={<Presentation/>} />
+      <Route path="/api-fetcher/" element={<ApiFetcher/>} />
        {/* Catch-all route for 404 */}
       {/* <Route path="*" element={<NotFound />} /> */}
     </Routes>
