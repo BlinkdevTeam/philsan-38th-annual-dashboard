@@ -102,12 +102,18 @@ const Presentation = () => {
                         <div className="pb-[20px]">
                             <h2 className="text-[24px] font-bold pb-[10px] text-[#EDB221] text-center md:text-left">Breakout Session 1</h2>
                             {
-                                sessionOne.map((i, index) => (
-                                    <SpeakerComponent
-                                        data={i}
-                                        key={"session1"+index}
-                                    />
-                                ))
+                                sessionOne.map((i, index) => {
+                                    if(i.id === 7) {
+                                        // this is to remove dr sarah pham's presentation
+                                        return;
+                                    }
+                                    return (
+                                        <SpeakerComponent
+                                            data={i}
+                                            key={"session1"+index}
+                                        />
+                                    )
+                                })
                             }
                         </div>
 
